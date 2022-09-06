@@ -1,11 +1,23 @@
+# sugardave's Bitburner Scripts - TypeScript Edition
+
+This repo was cloned from the [official TypeScript template](https://github.com/bitburner-official/typescript-template) and then mangled by me.
+
+Notable changes:
+
+- changed `name` in `package.json`
+- added `prettier` as a dev dependency
+
+Original (mostly) README continues below...
+
 ## Dependencies
 
 [Node.js](https://nodejs.org/en/download/) required for compiling typescript and installing dependencies
 
 ## Installation
 
-```
+```bash
 git clone https://github.com/bitburner-official/typescript-template
+cd typescript-template
 npm i
 ```
 
