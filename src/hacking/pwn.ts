@@ -1,5 +1,5 @@
 import {NS} from '@ns';
-import {Executor, NetServer} from 'global';
+import {CommandFlags, Executor, NetServer} from 'global';
 import {crackPorts} from 'utils/index';
 
 const prepForPwnage: Executor = (ns: NS, server: NetServer) => {
@@ -28,9 +28,10 @@ const pwnServer: Executor = (ns: NS, server: NetServer) => {
 
 const pwn = (ns: NS) => {
     const {flags, getHostname} = ns;
-    const {target} = flags([['target', getHostname()]]);
+    const {target}: CommandFlags = flags([['target', getHostname()]]);
+    const hostname = target as string;
 
-    return pwnServer(ns, target as NetServer);
+    return pwnServer(ns, {hostname});
 };
 
 const main = async (ns: NS) => pwn(ns);
