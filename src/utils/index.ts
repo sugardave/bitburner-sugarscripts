@@ -1,5 +1,11 @@
 import {NS} from '@ns';
-import {Executor, NetServer} from 'global';
+import {
+    AutoCompleter,
+    AutoCompletionResult,
+    CommandFlags,
+    Executor,
+    NetServer
+} from 'global';
 // Classes
 class BaseServer implements NetServer {
     chain?: string[] | undefined;
@@ -17,6 +23,27 @@ class Server extends BaseServer {
 }
 
 //  Methods
+// autocompletion
+const commonSchema: CommandFlags = [['target', '']];
+
+const getAutoCompletions: AutoCompleter = ({
+    args,
+    completionKeys,
+    defaultReturn = []
+}): AutoCompletionResult => {
+    const regex = /^--.*/;
+    for (const arg of args.slice(-2)) {
+        const completionKey = arg as string;
+        if (regex.test(completionKey)) {
+            const completions = completionKeys[completionKey.slice(2)];
+            if (completions.length) {
+                return completions;
+            }
+        }
+    }
+    return defaultReturn;
+};
+
 // pwning
 const portCrackerExists = (ns: NS, portCracker: string) => {
     const {fileExists} = ns;
@@ -73,4 +100,4 @@ const crackPorts: Executor = (ns: NS, server: NetServer) => {
     return server;
 };
 
-export {crackPorts, Server};
+export {commonSchema, crackPorts, getAutoCompletions, Server};
