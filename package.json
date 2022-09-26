@@ -6,7 +6,7 @@
         "sync": "npx bitburner-filesync"
     },
     "author": "Dave Freeman <sugardave@gmail.com> (https://github.com/sugardave)",
-    "license": "UNLICENSED",
+    "license": "Apache-2.0",
     "private": true,
     "dependencies": {
         "bitburner-filesync": "^1.0.0"
