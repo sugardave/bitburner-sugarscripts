@@ -12,9 +12,7 @@ type NetServer = Partial<Server> & Partial<ServerChain>;
 
 type Executor = (ns: NS, server: NetServer) => NetServer | unknown | void;
 
-interface CommandFlags {
-    [flag: string]: CommandFlag;
-}
 type CommandFlag = [string, ScriptArg];
+type CommandFlags = CommandFlag[];
 
 export {Executor, CommandFlags, NetServer, ServerMapEntry};

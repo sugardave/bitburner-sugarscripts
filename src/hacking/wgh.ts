@@ -1,5 +1,5 @@
 import {NS} from '@ns';
-import {CommandFlags, Executor, NetServer} from 'global';
+import {Executor, NetServer} from 'global';
 import {Server} from 'utils/index';
 
 const growServer: Executor = async (ns: NS, {hostname: target}: NetServer) => {
@@ -30,7 +30,7 @@ const wgh = async (ns: NS) => {
         getServerSecurityLevel,
         sleep
     } = ns;
-    const {repeat, target: hostname}: CommandFlags = flags([
+    const {repeat, target: hostname} = flags([
         ['repeat', true],
         ['target', getHostname()]
     ]);
