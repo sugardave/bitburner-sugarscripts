@@ -28,7 +28,7 @@ const commonSchema: CommandFlags = [['target', '']];
 
 const getAutoCompletions: AutoCompleter = ({
     args,
-    completionKeys,
+    completionKeys = {},
     defaultReturn = []
 }): AutoCompletionResult => {
     const regex = /^--.*/;

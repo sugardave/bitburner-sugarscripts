@@ -21,7 +21,7 @@ type AutoCompletionResult = [unknown[]] | [];
 
 type AutoCompleterArgs = {
     args: AutoCompletionArgs;
-    completionKeys: AutoCompletions;
+    completionKeys?: AutoCompletions;
     defaultReturn?: [unknown[]];
 };
 type AutoCompleter = (completerArgs: AutoCompleterArgs) => AutoCompletionResult;
