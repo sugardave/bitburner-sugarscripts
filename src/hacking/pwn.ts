@@ -41,7 +41,7 @@ const pwnServer: Executor = (ns: NS, server: NetServer) => {
 
 const pwn = (ns: NS) => {
     const {flags, getHostname} = ns;
-    const {target} = flags([['target', getHostname()]]);
+    const {target} = flags([...argsSchema, ['target', getHostname()]]);
     const hostname = target as string;
 
     return pwnServer(ns, {hostname});

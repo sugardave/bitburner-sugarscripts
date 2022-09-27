@@ -65,7 +65,7 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
 
 const mapServers = (ns: NS) => {
     const {flags, tprint} = ns;
-    const {rescan} = flags([['rescan', false]]);
+    const {rescan} = flags(argsSchema);
     initializeMapGroups(ns);
 
     if (rescan) {

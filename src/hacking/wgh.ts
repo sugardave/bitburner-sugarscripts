@@ -51,7 +51,7 @@ const wgh = async (ns: NS) => {
         sleep
     } = ns;
     const {once, target: hostname} = flags([
-        ['once', false],
+        ...argsSchema,
         ['target', getHostname()]
     ]);
     const secLevelModifier = 5;
