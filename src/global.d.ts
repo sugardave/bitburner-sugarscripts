@@ -31,7 +31,9 @@ type CommandFlags = CommandFlag[];
 
 export {
     Autocompleter,
+    AutocompletionArgs,
     AutocompletionResult,
+    Autocompletions,
     CommandFlag,
     CommandFlags,
     Executor,
