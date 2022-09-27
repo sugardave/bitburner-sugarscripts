@@ -30,8 +30,8 @@ const wgh = async (ns: NS) => {
         getServerSecurityLevel,
         sleep
     } = ns;
-    const {repeat, target: hostname} = flags([
-        ['repeat', true],
+    const {once, target: hostname} = flags([
+        ['once', false],
         ['target', getHostname()]
     ]);
     const secLevelModifier = 5;
@@ -43,7 +43,7 @@ const wgh = async (ns: NS) => {
         getServerMinSecurityLevel(target) + secLevelModifier;
     const minimumFundsAvailable = getServerMaxMoney(target) * fundsModifier;
 
-    while (repeat) {
+    while (!once) {
         const currentSecurityLevel = getServerSecurityLevel(target);
         const currentFunds = getServerMoneyAvailable(target);
         if (currentSecurityLevel > maximumSecurityLevel) {
