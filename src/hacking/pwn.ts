@@ -1,6 +1,19 @@
-import {NS} from '@ns';
-import {Executor, NetServer} from 'global';
-import {crackPorts} from 'utils/index';
+import {AutocompleteData, NS, ScriptArg} from '@ns';
+import {Autocompletions, CommandFlags, Executor, NetServer} from 'global';
+import {commonSchema, crackPorts, getAutocompletions} from 'utils/index';
+
+const argsSchema: CommandFlags = [...commonSchema];
+
+const autocomplete = (
+    {flags, servers}: AutocompleteData,
+    args: ScriptArg[]
+) => {
+    const completionKeys: Autocompletions = {
+        target: [...servers]
+    };
+    flags(argsSchema);
+    return getAutocompletions({args, completionKeys});
+};
 
 const prepForPwnage: Executor = (ns: NS, server: NetServer) => {
     if (!crackPorts(ns, server)) {
@@ -37,4 +50,4 @@ const pwn = (ns: NS) => {
 const main = async (ns: NS) => pwn(ns);
 
 export default main;
-export {main, pwn, pwnServer};
+export {autocomplete, main, pwn, pwnServer};
