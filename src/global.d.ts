@@ -15,14 +15,14 @@ type Executor = (ns: NS, server: NetServer) => NetServer | unknown | void;
 // command flag handling for autocompletion and other scripts
 type AutoCompletionArgs = ScriptArg[];
 type AutoCompletions = {
-    [key: string]: [unknown[]];
+    [key: string]: ScriptArg[];
 };
-type AutoCompletionResult = [unknown[]] | [];
+type AutoCompletionResult = unknown[] | [];
 
 type AutoCompleterArgs = {
     args: AutoCompletionArgs;
     completionKeys?: AutoCompletions;
-    defaultReturn?: [unknown[]];
+    defaultReturn?: AutoCompletionResult;
 };
 type AutoCompleter = (completerArgs: AutoCompleterArgs) => AutoCompletionResult;
 
