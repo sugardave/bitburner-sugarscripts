@@ -3,7 +3,7 @@ import {NS, ScriptArg} from '@ns';
 import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
 import {GameFile} from 'utils/io/GameFile';
 import {omniscan} from 'utils/discovery/omniscan';
-import {getAutoCompletions} from 'utils/index';
+import {getAutocompletions} from 'utils/index';
 
 class MapFile extends GameFile {
     constructor(ns: NS, name: string, location = '/trove/maps') {
@@ -27,7 +27,7 @@ const argsSchema: CommandFlags = [...customSchema];
 
 const autocomplete = ({flags}: NS, args: ScriptArg[]) => {
     flags(argsSchema);
-    return getAutoCompletions({args});
+    return getAutocompletions({args});
 };
 
 const serverMaps: NetServerMaps = {};
