@@ -1,6 +1,26 @@
-import {NS} from '@ns';
-import {Executor, NetServer} from 'global';
-import {Server} from 'utils/index';
+import {AutocompleteData, NS} from '@ns';
+import {
+    AutocompletionArgs,
+    Autocompletions,
+    CommandFlags,
+    Executor,
+    NetServer
+} from 'global';
+import {commonSchema, getAutocompletions, Server} from 'utils/index';
+
+const customSchema: CommandFlags = [['once', false]];
+const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
+
+const autocomplete = (
+    {flags, servers}: AutocompleteData,
+    args: AutocompletionArgs
+) => {
+    const completionKeys: Autocompletions = {
+        target: [...servers]
+    };
+    flags(argsSchema);
+    return getAutocompletions({args, completionKeys});
+};
 
 const growServer: Executor = async (ns: NS, {hostname: target}: NetServer) => {
     const {grow} = ns;
@@ -60,4 +80,4 @@ const wgh = async (ns: NS) => {
 const main = async (ns: NS) => await wgh(ns);
 
 export default main;
-export {main};
+export {autocomplete, main};
