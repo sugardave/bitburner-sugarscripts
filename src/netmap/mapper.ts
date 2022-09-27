@@ -1,8 +1,9 @@
-import {NS} from '@ns';
+import {NS, ScriptArg} from '@ns';
 
-import {GameFile} from 'utils/io/GameFile';
 import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
+import {GameFile} from 'utils/io/GameFile';
 import {omniscan} from 'utils/discovery/omniscan';
+import {getAutocompletions} from 'utils/index';
 
 class MapFile extends GameFile {
     constructor(ns: NS, name: string, location = '/trove/maps') {
@@ -19,6 +20,14 @@ type NetServerMap = {
 
 type NetServerMaps = {
     [key: string]: NetServerMap;
+};
+
+const customSchema: CommandFlags = [['rescan', false]];
+const argsSchema: CommandFlags = [...customSchema];
+
+const autocomplete = ({flags}: NS, args: ScriptArg[]) => {
+    flags(argsSchema);
+    return getAutocompletions({args});
 };
 
 const serverMaps: NetServerMaps = {};
@@ -56,7 +65,7 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
 
 const mapServers = (ns: NS) => {
     const {flags, tprint} = ns;
-    const {rescan}: CommandFlags = flags([['rescan', false]]);
+    const {rescan} = flags([['rescan', false]]);
     initializeMapGroups(ns);
 
     if (rescan) {
@@ -85,4 +94,4 @@ const mapServers = (ns: NS) => {
 const main = async (ns: NS) => mapServers(ns);
 
 export default main;
-export {main};
+export {autocomplete, main};

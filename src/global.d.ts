@@ -12,9 +12,31 @@ type NetServer = Partial<Server> & Partial<ServerChain>;
 
 type Executor = (ns: NS, server: NetServer) => NetServer | unknown | void;
 
-type CommandFlag = string[] | ScriptArg;
-interface CommandFlags {
-    [flag: string]: CommandFlag;
-}
+// command flag handling for autocompletion and other scripts
+type AutocompletionArgs = ScriptArg[];
+type Autocompletions = {
+    [key: string]: ScriptArg[];
+};
+type AutocompletionResult = unknown[] | [];
 
-export {Executor, CommandFlags, NetServer, ServerMapEntry};
+type AutocompleterArgs = {
+    args: AutocompletionArgs;
+    completionKeys?: Autocompletions;
+    defaultReturn?: AutocompletionResult;
+};
+type Autocompleter = (completerArgs: AutocompleterArgs) => AutocompletionResult;
+
+type CommandFlag = [string, ScriptArg];
+type CommandFlags = CommandFlag[];
+
+export {
+    Autocompleter,
+    AutocompletionArgs,
+    AutocompletionResult,
+    Autocompletions,
+    CommandFlag,
+    CommandFlags,
+    Executor,
+    NetServer,
+    ServerMapEntry
+};
