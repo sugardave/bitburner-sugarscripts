@@ -2,7 +2,7 @@ import {NS, ScriptArg} from '@ns';
 
 import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
 import {GameFile} from 'utils/io/GameFile';
-import {omniscan} from 'utils/discovery/omniscan';
+import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
 
 class MapFile extends GameFile {

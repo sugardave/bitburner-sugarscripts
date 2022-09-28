@@ -1,5 +1,5 @@
 import {NS} from '@ns';
-import {omniscan} from 'utils/discovery/omniscan';
+import {omniscan} from 'discovery/omniscan';
 import {pwnServer} from 'hacking/pwn';
 
 const autoPwn = async (ns: NS) => {
