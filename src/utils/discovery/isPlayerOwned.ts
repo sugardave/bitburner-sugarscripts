@@ -1,7 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {Executor} from 'global';
+import {Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
-import {getServerInfo} from 'utils/discovery/index';
+import {getServerInfo} from 'utils/discovery/getServerInfo';
 
 const argsSchema = [...commonSchema];
 
@@ -15,12 +15,19 @@ const autocomplete = (
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});
 };
-const isPlayerOwned: Executor = async (ns: NS) => {
-    const server = await getServerInfo(ns);
-    return server.purchasedByPlayer;
+const isPlayerOwned: Executor = (ns: NS, server: NetServer) => {
+    const {flags, getHostname} = ns;
+    const {target} = flags([...argsSchema, ['target', getHostname()]]);
+    const hostname = server.hostname ? server.hostname : (target as string);
+    const {purchasedByPlayer} = getServerInfo(ns) as NetServer;
+
+    ns.tprint(
+        `${hostname} is${!purchasedByPlayer ? ' not' : ''} owned by player`
+    );
+    return purchasedByPlayer;
 };
 
-const main = async (ns: NS) => await isPlayerOwned(ns, {});
+const main = async (ns: NS) => isPlayerOwned(ns, {});
 
 export default main;
 export {autocomplete, main};
