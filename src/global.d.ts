@@ -10,7 +10,10 @@ type ServerMapEntry = Map<NetServer['hostname'], Partial<Server>>;
 
 type NetServer = Partial<Server> & Partial<ServerChain>;
 
-type Executor = (ns: NS, server: NetServer) => NetServer | unknown | void;
+type Executor = (
+    ns: NS,
+    server: NetServer
+) => NetServer | ScriptArg | unknown | void;
 
 // command flag handling for autocompletion and other scripts
 type AutocompletionArgs = ScriptArg[];
