@@ -25,7 +25,12 @@ npm i
 
 Write all your typescript source code in the `/src` directory
 
-To autocompile as you save, run `npm run watch` in a terminal
+To autocompile as you save, run `npm run transpile` in a terminal.
+To send changed files as you save, run `npm run watch` in a terminal.
+Have them both running simultaneously so that it all happens automatically.
+
+For Bitburner to receive any files, you need to enter the port `npm run watch` logs to the terminal
+in the Remote API section of the game settings, and press the connect button.
 
 ## Imports
 

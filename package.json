@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "transpile": "npx tsc -w",
-        "sync": "npx bitburner-filesync"
+        "sync": "npx bitburner-filesync@latest"
     },
     "author": "Dave Freeman <sugardave@gmail.com> (https://github.com/sugardave)",
     "license": "Apache-2.0",
