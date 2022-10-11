@@ -18,7 +18,7 @@ type Executor = (
 // command flag handling for autocompletion and other scripts
 type AutocompletionArgs = ScriptArg[];
 type Autocompletions = {
-    [key: string]: ScriptArg[];
+    [key: string]: ScriptArg[] | string[];
 };
 type AutocompletionResult = unknown[] | [];
 
@@ -29,7 +29,7 @@ type AutocompleterArgs = {
 };
 type Autocompleter = (completerArgs: AutocompleterArgs) => AutocompletionResult;
 
-type CommandFlag = [string, ScriptArg];
+type CommandFlag = [string, ScriptArg | []];
 type CommandFlags = CommandFlag[];
 
 export {
