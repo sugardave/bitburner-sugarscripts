@@ -11,9 +11,9 @@ Original (mostly) README continues below...
 
 ## Dependencies
 
-[Node.js](https://nodejs.org/en/download/) required for compiling typescript and installing dependencies
+The official template for synchronizing Typescript/Javascript from your computer to the game.
 
-## Installation
+[Step by step install](BeginnersGuide.md)
 
 ```bash
 git clone https://github.com/bitburner-official/typescript-template
@@ -21,7 +21,7 @@ cd typescript-template
 npm i
 ```
 
-## How to use this template
+### How to use this template
 
 Write all your typescript source code in the `/src` directory
 
@@ -32,7 +32,13 @@ Have them both running simultaneously so that it all happens automatically.
 For Bitburner to receive any files, you need to enter the port `npm run watch` logs to the terminal
 in the Remote API section of the game settings, and press the connect button.
 
-## Imports
+For Bitburner to receive any files, you need to enter the port `npm run watch` logs to the terminal
+in the Remote API section of the game settings, and press the connect button.
+
+[See here for step by step installation](BeginnersGuide.md) if you'd like help with installing Node and/or connecting to the game.
+
+## Advanced
+### Imports
 
 To ensure both the game and typescript have no issues with import paths, your import statements should follow a few formatting rules:
 
@@ -40,7 +46,7 @@ To ensure both the game and typescript have no issues with import paths, your im
 - Paths must contain no leading slash
 - Paths must end with no file extension
 
-### Examples:
+#### Examples:
 
 To import `helperFunction` from the file `helpers.ts` located in the directory `src/lib/`:
 
@@ -59,7 +65,6 @@ To import `someFunction` from the file `main.ts` located in the `src/` directory
 ```js
 import { someFunction } from "main";
 ```
-
-## Debugging
+### Debugging
 
 For debugging bitburner on Steam you will need to enable a remote debugging port. This can be done by rightclicking bitburner in your Steam library and selecting properties. There you need to add `--remote-debugging-port=9222` [Thanks @DarkMio]
