@@ -28,16 +28,18 @@ const getAutocompletions: Autocompleter = ({
     defaultReturn = []
 }) => {
     const regex = /^--.*/;
+    let completions = defaultReturn;
+
     for (const arg of args.slice(-2)) {
         const completionKey = arg as string;
         if (regex.test(completionKey)) {
-            const completions = completionKeys[completionKey.slice(2)];
-            if (completions.length) {
-                return completions;
+            const flagMatch = completionKeys[completionKey.slice(2)];
+            if (flagMatch) {
+                completions = flagMatch;
             }
         }
     }
-    return defaultReturn;
+    return completions;
 };
 
 // pwning
