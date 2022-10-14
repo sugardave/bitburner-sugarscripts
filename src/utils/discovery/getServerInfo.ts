@@ -15,20 +15,17 @@ const autocomplete = (
     return getAutocompletions({args, completionKeys});
 };
 
-const getServer: Executor = (ns: NS, {hostname}: NetServer) => {
-    // TODO: check for nmap saved file "all-servers.txt" first and return information from there if possible
-    return ns.getServer(hostname);
-};
+// TODO: check for nmap saved file "all-servers.txt" first and return information from there if possible
+const getServerInfo: Executor = ({getServer}, {hostname}) =>
+    getServer(hostname);
 
-const getServerInfo = (ns: NS) => {
+const main = async (ns: NS) => {
     const {flags, getHostname} = ns;
-    const {target} = flags([...argsSchema, ['target', getHostname()]]);
-    const hostname = target as string;
-    const serverInfo = getServer(ns, {hostname});
-    return serverInfo as NetServer;
-};
+    const {target: hostname = getHostname()} = flags(argsSchema);
+    const serverInfo = getServerInfo(ns, {hostname} as NetServer, {});
 
-const main = async (ns: NS) => getServerInfo(ns);
+    return serverInfo;
+};
 
 export default main;
 export {autocomplete, getServerInfo, main};

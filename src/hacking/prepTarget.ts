@@ -1,7 +1,6 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {CommandFlags, Executor, NetServer} from 'global';
+import {CommandFlags, Executor, ExecutorOptions, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
-import {makeFileList} from 'utils/io/GameFileList';
 import {getServerInfo} from 'utils/discovery/getServerInfo';
 
 const customSchema: CommandFlags = [
@@ -11,42 +10,44 @@ const customSchema: CommandFlags = [
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
 const autocomplete = (
-    {flags, servers}: AutocompleteData,
+    {flags, servers, scripts}: AutocompleteData,
     args: ScriptArg[]
 ) => {
-    const fileArgs = [...args].map((arg, i, arr) => {
-        console.log(`arg ${arg}`);
-        if (arg.toString() === `--file`) {
-            const file = arr[i + 1];
-            return file ? file : undefined;
-        }
-        return [];
-    });
     const completionKeys = {
-        file: makeFileList(fileArgs as string[]) as string[],
-        origin: servers,
-        target: servers
+        file: [...scripts],
+        origin: [...servers],
+        target: [...servers]
     };
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});
 };
 
-const prepTarget: Executor = async (ns: NS, server: NetServer) => {
-    const {flags, getHostname, scp} = ns;
-    const {
-        file: files,
-        origin,
-        target
-    } = flags([...argsSchema, ['target', getHostname()]]);
-    const hostname = server.hostname ? server.hostname : (target as string);
-    const {hasAdminRights} = getServerInfo(ns) as NetServer;
-
+const prepTarget: Executor = (
+    {getServer, scp}: NS,
+    {hostname}: NetServer,
+    {files, origin}: ExecutorOptions
+) => {
+    const {hasAdminRights} = getServerInfo(
+        {getServer} as NS,
+        {hostname},
+        {}
+    ) as NetServer;
     if (hasAdminRights) {
-        scp(files as string[], hostname, origin as string);
+        return scp(files as string[], hostname as string, origin as string);
     }
+    return;
 };
 
-const main = async (ns: NS) => await prepTarget(ns, {});
+const main = async (ns: NS) => {
+    const {flags, getHostname} = ns;
+    const {
+        file: files,
+        origin = 'home',
+        target: hostname = getHostname()
+    } = flags(argsSchema);
+
+    return prepTarget(ns, {hostname} as NetServer, {files, origin});
+};
 
 export default main;
 export {autocomplete, main};
