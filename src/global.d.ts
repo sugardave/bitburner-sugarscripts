@@ -10,9 +10,12 @@ type ServerMapEntry = Map<NetServer['hostname'], Partial<Server>>;
 
 type NetServer = Partial<Server> & Partial<ServerChain>;
 
+type ExecutorOptions = Record<string, unknown>;
+
 type Executor = (
     ns: NS,
-    server: NetServer
+    server: NetServer,
+    options: ExecutorOptions
 ) => NetServer | ScriptArg | unknown | void;
 
 // command flag handling for autocompletion and other scripts
@@ -40,6 +43,7 @@ export {
     CommandFlag,
     CommandFlags,
     Executor,
+    ExecutorOptions,
     NetServer,
     ServerMapEntry
 };
