@@ -1,9 +1,9 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {Executor, NetServer} from 'global';
+import {CommandFlags, Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
 import {getServerInfo} from 'utils/discovery/getServerInfo';
 
-const argsSchema = [...commonSchema];
+const argsSchema: CommandFlags = [...commonSchema];
 
 const autocomplete = (
     {flags, servers}: AutocompleteData,
