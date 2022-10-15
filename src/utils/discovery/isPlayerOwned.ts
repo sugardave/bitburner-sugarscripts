@@ -15,19 +15,21 @@ const autocomplete = (
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});
 };
-const isPlayerOwned: Executor = (ns: NS, server: NetServer) => {
-    const {flags, getHostname} = ns;
-    const {target} = flags([...argsSchema, ['target', getHostname()]]);
-    const hostname = server.hostname ? server.hostname : (target as string);
-    const {purchasedByPlayer} = getServerInfo(ns) as NetServer;
+const isPlayerOwned: Executor = (ns: NS, {hostname}: NetServer) => {
+    const {purchasedByPlayer} = getServerInfo(
+        ns,
+        {hostname} as NetServer,
+        {}
+    ) as NetServer;
 
-    ns.tprint(
-        `${hostname} is${!purchasedByPlayer ? ' not' : ''} owned by player`
-    );
     return purchasedByPlayer;
 };
 
-const main = async (ns: NS) => isPlayerOwned(ns, {});
+const main = async (ns: NS) => {
+    const {flags, getHostname} = ns;
+    const {target: hostname = getHostname()} = flags(argsSchema);
+    return isPlayerOwned(ns, {hostname} as NetServer, {});
+};
 
 export default main;
 export {autocomplete, main};
