@@ -25,17 +25,13 @@ class GameFile {
         const {read} = GameFile.ns;
         const thisFile = this.getFilePath();
 
-        if (GameFile.exists(thisFile)) {
-            return read(thisFile);
-        } else {
-            return;
-        }
+        return read(thisFile) as string;
     }
 
     write(contents: string | number | string[], append = false) {
         const {write} = GameFile.ns;
         const thisFile = this.getFilePath();
-        write(thisFile, contents, append ? 'a' : 'w');
+        return write(thisFile, contents, append ? 'a' : 'w');
     }
 }
 
