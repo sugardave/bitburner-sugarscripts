@@ -16,7 +16,7 @@ type Executor = (
     ns: NS,
     server: NetServer,
     options: ExecutorOptions
-) => NetServer | ScriptArg | unknown | void;
+) => NetServer | ScriptArg | boolean | unknown | void;
 
 // command flag handling for autocompletion and other scripts
 type AutocompletionArgs = ScriptArg[];
