@@ -6,7 +6,10 @@ class GameFile {
 
     static ns: NS;
 
-    constructor(name: string, location = '/') {
+    constructor(ns: NS, name: string, location = '/') {
+        if (!GameFile.ns) {
+            GameFile.ns = ns;
+        }
         this.location = location;
         this.name = name;
     }
