@@ -19,10 +19,8 @@ const autocomplete = (
 const loadServerCache = (ns: NS, cacheType = 'all') => {
     const {location, suffix} = fileLocations.nmapCache;
     const fileName = `${cacheType}${suffix}`;
-    const file = new GameFile(fileName, location);
-    GameFile.ns = ns;
+    const file = new GameFile(ns, fileName, location);
     const contents = file.read();
-    console.log({contents});
 
     return contents ? JSON.parse(contents) : contents;
 };
@@ -30,7 +28,6 @@ const loadServerCache = (ns: NS, cacheType = 'all') => {
 const getServerInfo: Executor = (ns, {hostname}) => {
     const {getServer} = ns;
     const cache = loadServerCache(ns);
-    console.log({cache});
     return cache ? cache[hostname as string] : getServer(hostname);
 };
 
