@@ -32,4 +32,4 @@ const main = async (ns: NS) => {
 };
 
 export default main;
-export {autocomplete, main};
+export {autocomplete, isServerRooted, main};
