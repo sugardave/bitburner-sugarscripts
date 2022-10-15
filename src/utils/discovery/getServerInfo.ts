@@ -1,6 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
+import {fileLocations, GameFile} from 'utils/io/index';
 
 const argsSchema = [...commonSchema];
 
@@ -15,9 +16,23 @@ const autocomplete = (
     return getAutocompletions({args, completionKeys});
 };
 
-// TODO: check for nmap saved file "all-servers.txt" first and return information from there if possible
-const getServerInfo: Executor = ({getServer}, {hostname}) =>
-    getServer(hostname);
+const loadServerCache = (ns: NS, cacheType = 'all') => {
+    const {location, suffix} = fileLocations.nmapCache;
+    const fileName = `${cacheType}${suffix}`;
+    const file = new GameFile(fileName, location);
+    GameFile.ns = ns;
+    const contents = file.read();
+    console.log({contents});
+
+    return contents ? JSON.parse(contents) : contents;
+};
+
+const getServerInfo: Executor = (ns, {hostname}) => {
+    const {getServer} = ns;
+    const cache = loadServerCache(ns);
+    console.log({cache});
+    return cache ? cache[hostname as string] : getServer(hostname);
+};
 
 const main = async (ns: NS) => {
     const {flags, getHostname} = ns;

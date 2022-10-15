@@ -28,7 +28,7 @@ class GameFile {
         if (GameFile.exists(thisFile)) {
             return read(thisFile);
         } else {
-            return `${thisFile} does not exist!`;
+            return;
         }
     }
 
