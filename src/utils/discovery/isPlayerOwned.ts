@@ -1,7 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {CommandFlags, Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
-import {getServerInfo} from 'utils/discovery/getServerInfo';
+import {getServerInfo} from 'utils/discovery/index';
 
 const argsSchema: CommandFlags = [...commonSchema];
 
