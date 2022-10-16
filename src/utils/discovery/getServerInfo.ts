@@ -3,7 +3,8 @@ import {CommandFlags, Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
 import {fileLocations, MapFile} from 'utils/io/index';
 
-const argsSchema: CommandFlags = [...commonSchema];
+const customSchema: CommandFlags = [['skipCache', false]];
+const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
 const autocomplete = (
     {flags, servers}: AutocompleteData,
@@ -24,16 +25,18 @@ const loadServerCache = (ns: NS, cacheType = 'all') => {
     return new Map(contents ? JSON.parse(contents) : []);
 };
 
-const getServerInfo: Executor = (ns, {hostname}) => {
+const getServerInfo: Executor = (ns: NS, {hostname}, {skipCache}) => {
     const {getServer} = ns;
-    const cache = loadServerCache(ns);
-    return cache.size ? cache.get(hostname) : getServer(hostname);
+    const cache = !skipCache ? loadServerCache(ns) : new Map([]);
+    const serverInfo = cache.size ? cache.get(hostname) : getServer(hostname);
+
+    return serverInfo;
 };
 
 const main = async (ns: NS) => {
     const {flags, getHostname} = ns;
-    const {target: hostname = getHostname()} = flags(argsSchema);
-    const serverInfo = getServerInfo(ns, {hostname} as NetServer, {});
+    const {skipCache, target: hostname = getHostname()} = flags(argsSchema);
+    const serverInfo = getServerInfo(ns, {hostname} as NetServer, {skipCache});
 
     return serverInfo;
 };
