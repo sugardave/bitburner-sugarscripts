@@ -1,9 +1,9 @@
 import {NS, ScriptArg} from '@ns';
-
 import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
-import {MapFile} from 'utils/io/index';
 import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
+import {isPlayerOwned, isServerRooted} from 'utils/discovery/index';
+import {MapFile} from 'utils/io/index';
 
 type NetServerMap = {
     map: ServerMapEntry;
@@ -39,11 +39,24 @@ const hydrateServerMap = ({map, file}: NetServerMap) => {
 const addToMap: Executor = (ns: NS, server: NetServer) => {
     const {getHostname, getServer} = ns;
     const {hostname = getHostname(), ...rest} = server;
-    const serverInfo = Object.assign(getServer(hostname), {...rest});
-    if (!serverMaps.all.map.has(hostname)) {
-        serverMaps.all.map.set(hostname, serverInfo);
+    const {all, owned, pwned} = serverMaps;
+    const serverInfo = Object.assign(getServer(hostname), {
+        ...rest,
+        _cached: Date.now()
+    });
+    if (!all.map.has(hostname)) {
+        all.map.set(hostname, serverInfo);
     }
-    return serverMaps.all.map.get(hostname);
+    if (isPlayerOwned(ns, server, {}) && !owned.map.has(hostname)) {
+        owned.map.set(hostname, serverInfo);
+    } else if (
+        isServerRooted(ns, server, {}) &&
+        !owned.map.has(hostname) &&
+        !pwned.map.has(hostname)
+    ) {
+        pwned.map.set(hostname, serverInfo);
+    }
+    return all.map.get(hostname);
 };
 
 const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
@@ -58,26 +71,25 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
 const mapServers = (ns: NS) => {
     const {flags, tprint} = ns;
     const {rescan} = flags(argsSchema);
+    const serverGroups = ['all', 'owned', 'pwned'];
     initializeMapGroups(ns);
-
     if (rescan) {
-        // refresh/build Map of servers
         omniscan(ns, {executor: addToMap});
-        if (serverMaps.all.file instanceof MapFile) {
-            // write allServersMap to file
-            serverMaps.all.file.write(JSON.stringify([...serverMaps.all.map]));
+        for (const group of serverGroups) {
+            const {file, map} = serverMaps[group];
+            file.write(JSON.stringify([...map]));
         }
-
-        // TODO: process owned/pwned servers into their respective ServerMap and MapFile
     } else {
-        if (serverMaps.all.file instanceof MapFile) {
-            if (MapFile.exists(serverMaps.all.file.getFilePath())) {
-                // hydrate
-                hydrateServerMap(serverMaps.all);
-            } else {
+        for (const group of serverGroups) {
+            const {file, map} = serverMaps[group];
+            if (MapFile.exists(file.getFilePath())) {
+                hydrateServerMap({map, file});
+            }
+            if (group === 'all' && !map.size) {
                 tprint(
                     `hydration failed, run mapper again with --rescan option`
                 );
+                break;
             }
         }
     }
