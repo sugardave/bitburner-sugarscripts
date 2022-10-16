@@ -1,17 +1,9 @@
 import {NS, ScriptArg} from '@ns';
 
 import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
-import {GameFile} from 'utils/io/GameFile';
+import {MapFile} from 'utils/io/index';
 import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
-
-class MapFile extends GameFile {
-    constructor(ns: NS, name: string, location = '/trove/maps') {
-        // set static member for class GameFile to this ns instance
-        GameFile.ns = ns;
-        super(name, location);
-    }
-}
 
 type NetServerMap = {
     map: ServerMapEntry;
