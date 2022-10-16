@@ -35,7 +35,7 @@ const serverMaps: NetServerMaps = {};
 const hydrateServerMap = ({map, file}: NetServerMap) => {
     map.clear();
     if (file instanceof MapFile) {
-        JSON.parse(file.read()).map(
+        JSON.parse(file.read() as string).map(
             ([key, value]: [key: string, value: NetServer]) => {
                 map.set(key, value);
             }
