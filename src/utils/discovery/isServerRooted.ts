@@ -1,7 +1,6 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {CommandFlags, Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
-import {getServerInfo} from 'utils/discovery/index';
 
 const argsSchema: CommandFlags = [...commonSchema];
 
@@ -15,15 +14,9 @@ const autocomplete = (
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});
 };
-const isServerRooted: Executor = (ns: NS, {hostname}: NetServer) => {
-    const {hasAdminRights} = getServerInfo(
-        ns,
-        {hostname} as NetServer,
-        {}
-    ) as NetServer;
 
-    return hasAdminRights;
-};
+const isServerRooted: Executor = ({getServer}: NS, {hostname}) =>
+    getServer(hostname).hasAdminRights;
 
 const main = async (ns: NS) => {
     const {flags, getHostname} = ns;
