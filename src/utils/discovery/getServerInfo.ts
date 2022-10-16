@@ -1,7 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {CommandFlags, Executor, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
-import {fileLocations, GameFile} from 'utils/io/index';
+import {fileLocations, MapFile} from 'utils/io/index';
 
 const argsSchema: CommandFlags = [...commonSchema];
 
@@ -19,16 +19,15 @@ const autocomplete = (
 const loadServerCache = (ns: NS, cacheType = 'all') => {
     const {location, suffix} = fileLocations.nmapCache;
     const fileName = `${cacheType}${suffix}`;
-    const file = new GameFile(ns, fileName, location);
+    const file = new MapFile(ns, fileName, location);
     const contents = file.read();
-
-    return contents ? JSON.parse(contents) : contents;
+    return new Map(contents ? JSON.parse(contents) : []);
 };
 
 const getServerInfo: Executor = (ns, {hostname}) => {
     const {getServer} = ns;
     const cache = loadServerCache(ns);
-    return cache ? cache[hostname as string] : getServer(hostname);
+    return cache.size ? cache.get(hostname) : getServer(hostname);
 };
 
 const main = async (ns: NS) => {
