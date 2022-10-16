@@ -31,7 +31,7 @@ const omniscan = (
             return hostname;
         });
     if (executor) {
-        executor(ns, server);
+        executor(ns, server, {});
     }
     return server.chain;
 };
