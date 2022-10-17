@@ -16,7 +16,7 @@ const autocomplete = (
 };
 
 const prepForPwnage: Executor = (ns: NS, server: NetServer) => {
-    if (!crackPorts(ns, server)) {
+    if (!crackPorts(ns, server, {})) {
         return;
     }
     return server;
@@ -31,7 +31,7 @@ const pwnServer: Executor = (ns: NS, server: NetServer) => {
         `pwnServer ${server.hostname}; needs ${numOpenPortsRequired} ports open`
     );
     if ((numOpenPortsRequired as number) > 0) {
-        if (!prepForPwnage(ns, server)) {
+        if (!prepForPwnage(ns, server, {})) {
             return;
         }
     }
@@ -44,7 +44,7 @@ const pwn = (ns: NS) => {
     const {target} = flags([...argsSchema, ['target', getHostname()]]);
     const hostname = target as string;
 
-    return pwnServer(ns, {hostname});
+    return pwnServer(ns, {hostname}, {});
 };
 
 const main = async (ns: NS) => pwn(ns);
