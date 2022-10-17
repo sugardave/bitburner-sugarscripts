@@ -7,9 +7,6 @@ class GameFile {
     static ns: NS;
 
     constructor(ns: NS, name: string, location = '/') {
-        if (!GameFile.ns) {
-            GameFile.ns = ns;
-        }
         this.location = location;
         this.name = name;
     }

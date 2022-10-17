@@ -5,7 +5,7 @@ class MapFile extends GameFile {
     constructor(ns: NS, name: string, location = '/trove/maps') {
         // set static member for class GameFile to this ns instance
         GameFile.ns = ns;
-        super(name, location);
+        super(ns, name, location);
     }
 }
 
