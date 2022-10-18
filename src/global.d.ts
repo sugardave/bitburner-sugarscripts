@@ -35,11 +35,25 @@ type Autocompleter = (completerArgs: AutocompleterArgs) => AutocompletionResult;
 type CommandFlag = [string, ScriptArg | []];
 type CommandFlags = CommandFlag[];
 
+// botnet
+type BotServer = Partial<NetServer>;
+type Botnet = {
+    name: string;
+    members?: BotServer[];
+};
+
+type BotnetManagerOptions = {
+    [name: string]: ScriptArg | ScriptArg[];
+};
+
 export {
     Autocompleter,
     AutocompletionArgs,
     AutocompletionResult,
     Autocompletions,
+    Botnet,
+    BotnetManagerOptions,
+    BotServer,
     CommandFlag,
     CommandFlags,
     Executor,
