@@ -43,6 +43,10 @@ const manageBotnets = (
         case 'checkPricing':
             tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
             break;
+        case 'removeBot':
+            break;
+        case 'removeBotnet':
+            break;
         default:
             break;
     }
