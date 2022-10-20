@@ -1,4 +1,6 @@
 const botnetActions = [
+    'addBot',
+    'addBotnet',
     'checkPricing',
 ];
 

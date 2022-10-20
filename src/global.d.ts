@@ -36,11 +36,12 @@ type CommandFlag = [string, ScriptArg | []];
 type CommandFlags = CommandFlag[];
 
 // botnet
-type BotServer = Partial<NetServer>;
+type BotServer = {memberOf: string} & Partial<NetServer>;
 type Botnet = {
     name: string;
     members?: BotServer[];
 };
+type BotnetMap = Map<Botnet['name'], Botnet>;
 
 type BotnetManagerOptions = {
     [name: string]: ScriptArg | ScriptArg[];
@@ -53,6 +54,7 @@ export {
     Autocompletions,
     Botnet,
     BotnetManagerOptions,
+    BotnetMap,
     BotServer,
     CommandFlag,
     CommandFlags,
