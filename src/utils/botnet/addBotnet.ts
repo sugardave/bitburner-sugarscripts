@@ -2,15 +2,22 @@ import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {BotnetManagerOptions, Botnet, CommandFlags, BotnetMap} from 'global';
 import {getAutocompletions} from 'utils/index';
 import {addBot} from 'utils/botnet/addBot';
+import {botnetMap} from 'utils/botnet/botnetMap';
 import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
-import {botnetMap} from 'utils/botnet/botnetMap';
+import {ramOptions} from 'utils/botnet/ramOptions';
+import {getDataStash} from 'utils/data/index';
 
 const argsSchema: CommandFlags = [...botnetFlagsSchema];
+
 const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
+    const {stash} = getDataStash().dataset;
+    const {cache} = JSON.parse(stash as string);
+    const botnets = new Map(cache.botnetMap);
     const completionKeys = {
-        botnet: [] // TODO: port botnet listing code
+        botnet: [...Array.from(botnets.keys())] as string[],
+        ram: [...ramOptions]
     };
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});

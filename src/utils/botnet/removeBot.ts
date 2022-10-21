@@ -1,14 +1,26 @@
-import {NS} from '@ns';
+import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {Botnet, BotnetManagerOptions, BotnetMap, CommandFlags} from 'global';
 import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {generateBotnetName} from 'utils/botnet/generateBotnetName';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
+import {ramOptions} from 'utils/botnet/ramOptions';
+import {getAutocompletions} from 'utils/index';
+import {getDataStash} from 'utils/data/index';
 
 const argsSchema: CommandFlags = [...botnetFlagsSchema];
 
-// TODO: add autocomplete
-// TODO: refine/simplify `addBot` to something closer to `removeBot`
+const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
+    const {stash} = getDataStash().dataset;
+    const {cache} = JSON.parse(stash as string);
+    const botnets = new Map(cache.botnetMap);
+    const completionKeys = {
+        botnet: [...Array.from(botnets.keys())] as string[],
+        ram: [...ramOptions]
+    };
+    flags(argsSchema);
+    return getAutocompletions({args, completionKeys});
+};
 
 const removeBot = (ns: NS, {bot}: BotnetManagerOptions) => {
     const {deleteServer} = ns;
@@ -36,4 +48,4 @@ const main = async (ns: NS) => {
 };
 
 export default main;
-export {main, removeBot};
+export {autocomplete, main, removeBot};

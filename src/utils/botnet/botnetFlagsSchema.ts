@@ -5,7 +5,7 @@ const botnetFlagsSchema: CommandFlags = [
     ['bot', ''],
     ['botnet', []],
     ['controller', 'home'],
-    ['quantity', 1],
+    ['quantity', 0],
     ['ram', []]
 ];
 
