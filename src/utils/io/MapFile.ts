@@ -8,9 +8,9 @@ class MapFile extends GameFile {
         name: string,
         location = fileLocations.nmapCache.location
     ) {
+        super(name, location);
         // set static member for class GameFile to this ns instance
         GameFile.ns = ns;
-        super(ns, name, location);
     }
 }
 

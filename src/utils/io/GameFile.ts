@@ -6,7 +6,7 @@ class GameFile {
 
     static ns: NS;
 
-    constructor(ns: NS, name: string, location = '/') {
+    constructor(name: string, location = '/') {
         this.location = location;
         this.name = name;
     }
