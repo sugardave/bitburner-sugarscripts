@@ -49,6 +49,8 @@ const manageBotnets = (
             break;
         case 'removeBotnet':
             break;
+        case 'startAttack':
+            break;
         default:
             break;
     }

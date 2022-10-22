@@ -6,6 +6,7 @@ const botnetActions = [
     'getBotnetStatus',
     'removeBot',
     'removeBotnet',
+    'startAttack',
 ];
 
 export default botnetActions;
