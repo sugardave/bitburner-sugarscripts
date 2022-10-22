@@ -2,6 +2,7 @@ import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {CommandFlags, Executor, ExecutorOptions, NetServer} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
 import {getServerInfo} from 'utils/discovery/getServerInfo';
+import {deployFiles} from 'utils/hacking/deployFiles';
 
 const customSchema: CommandFlags = [
     ['file', []],
@@ -23,17 +24,18 @@ const autocomplete = (
 };
 
 const prepTarget: Executor = (
-    {getServer, scp}: NS,
+    ns: NS,
     {hostname}: NetServer,
     {files, origin}: ExecutorOptions
 ) => {
+    const {getServer} = ns;
     const {hasAdminRights} = getServerInfo(
         {getServer} as NS,
         {hostname},
         {}
     ) as NetServer;
     if (hasAdminRights) {
-        return scp(files as string[], hostname as string, origin as string);
+        return deployFiles(ns, {hostname} as NetServer, {files, origin});
     }
     return;
 };
@@ -46,8 +48,8 @@ const main = async (ns: NS) => {
         target: hostname = getHostname()
     } = flags(argsSchema);
 
-    return prepTarget(ns, {hostname} as NetServer, {files, origin});
+    return deployFiles(ns, {hostname} as NetServer, {files, origin});
 };
 
 export default main;
-export {autocomplete, main};
+export {autocomplete, main, prepTarget};
