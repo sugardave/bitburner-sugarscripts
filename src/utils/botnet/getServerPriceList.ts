@@ -1,10 +1,10 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {CommandFlags} from 'global';
 import {getAutocompletions} from 'utils/index';
-import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
+import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {ramOptions} from 'utils/botnet/ramOptions';
 
-const argsSchema: CommandFlags = [...botnetFlagsSchema];
+const argsSchema: CommandFlags = [...botnetFlagsSchemas.checkPricing];
 
 const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
     const completionKeys = {

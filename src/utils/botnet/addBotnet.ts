@@ -2,14 +2,13 @@ import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {BotnetManagerOptions, Botnet, CommandFlags, BotnetMap} from 'global';
 import {getAutocompletions} from 'utils/index';
 import {addBot} from 'utils/botnet/addBot';
-import {botnetMap} from 'utils/botnet/botnetMap';
-import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
+import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 import {ramOptions} from 'utils/botnet/ramOptions';
 import {getDataStash} from 'utils/data/index';
 
-const argsSchema: CommandFlags = [...botnetFlagsSchema];
+const argsSchema: CommandFlags = [...botnetFlagsSchemas.addBotnet];
 
 const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
     const {stash} = getDataStash().dataset;
@@ -25,7 +24,7 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 
 const addBotnet = (
     ns: NS,
-    {botnet, quantity, ram: rams}: BotnetManagerOptions
+    {botnet, quantity = 1, ram: rams}: BotnetManagerOptions
 ) => {
     const botnets = hydrateBotnetMap(ns) as BotnetMap;
     const nets: string[] = Array.isArray(botnet)
@@ -38,24 +37,19 @@ const addBotnet = (
         }
         if (quantity && ram) {
             const {members = []} = botnets.get(net) as Botnet;
-            for (let i = 0; i < quantity; i += 1) {
-                const bot = addBot(ns, {botnet: net, ram}, {botnetMap});
-                if (bot.hostname) {
-                    members.push(bot);
-                }
-            }
+            const added = addBot(ns, {bot: net, quantity, ram});
+            members.splice(members.length, 0, ...added);
             botnets.set(net, {name: net, members});
         }
     }
 
     cacheBotnetMap(ns, botnets);
-
-    return botnets.get(botnet as string);
+    return botnets;
 };
 
 const main = async (ns: NS) => {
     const {flags} = ns;
-    const {botnet, quantity, ram} = flags(argsSchema);
+    const {botnet, quantity = 1, ram} = flags(argsSchema);
     return addBotnet(ns, {botnet, quantity, ram});
 };
 

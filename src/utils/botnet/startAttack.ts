@@ -7,10 +7,11 @@ import {
     NetServer
 } from 'global';
 import {deployScripts} from 'utils/botnet/deployScripts';
-import {botnetFlagsSchema as customSchema} from 'utils/botnet/botnetFlagsSchema';
+import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {commonSchema} from 'utils/index';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
+const customSchema = [...botnetFlagsSchemas.startAttack];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
 // TODO: investigate turning this into an Executor or changing to a different option type

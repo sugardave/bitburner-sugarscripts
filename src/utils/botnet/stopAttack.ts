@@ -1,9 +1,9 @@
 import {NS} from '@ns';
 import {BotnetMap, CommandFlags} from 'global';
-import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
+import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
-const argsSchema: CommandFlags = [...botnetFlagsSchema];
+const argsSchema: CommandFlags = [...botnetFlagsSchemas.stopAttack];
 
 const stopAttack = (ns: NS, botnets: string[]) => {
     const {killall} = ns;
