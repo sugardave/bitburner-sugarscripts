@@ -15,5 +15,7 @@ const hydrateBotnetMap = (ns: NS, mapType = 'all') => {
     return result;
 };
 
-export default hydrateBotnetMap;
-export {hydrateBotnetMap};
+const main = async (ns: NS) => hydrateBotnetMap(ns);
+
+export default main;
+export {hydrateBotnetMap, main};

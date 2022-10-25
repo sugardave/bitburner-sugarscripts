@@ -11,5 +11,7 @@ const cacheBotnetMap = (ns: NS, botnetMap: BotnetMap, mapType = 'all') => {
     mapFile.write(stringified);
 };
 
-export default cacheBotnetMap;
-export {cacheBotnetMap};
+const main = async (ns: NS) => cacheBotnetMap(ns, new Map());
+
+export default main;
+export {cacheBotnetMap, main};
