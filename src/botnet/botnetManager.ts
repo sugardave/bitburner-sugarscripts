@@ -2,13 +2,14 @@ import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {BotnetManagerOptions, CommandFlags} from 'global';
 import {commonSchema, getAutocompletions} from 'utils/index';
 import {
+    addBot,
+    addBotnet,
     botnetActions,
     botnetFlagsSchema as customSchema,
     botnetMap,
     ramOptions
 } from 'utils/botnet/index';
 import {getServerPriceList} from 'utils/botnet/getServerPriceList';
-import {fileLocations, MapFile} from 'utils/io/index';
 
 const botnets = new Map(botnetMap);
 
@@ -31,14 +32,15 @@ const autocomplete = (
 
 const manageBotnets = (
     ns: NS,
-    {action, bot, botnet, controller, quantity, ram}: BotnetManagerOptions
+    {action, bot, botnet, quantity, ram}: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
-    hydrateBotnetMap(ns);
     switch (action) {
         case 'addBot':
+            addBot(ns, {bot, ram} as BotnetManagerOptions);
             break;
         case 'addBotnet':
+            addBotnet(ns, {botnet, quantity, ram});
             break;
         case 'checkPricing':
             tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
@@ -61,8 +63,8 @@ const manageBotnets = (
 const main = async (ns: NS) => {
     const {flags} = ns;
 
-    const {action, bot, botnet, controller, quantity, ram} = flags(argsSchema);
-    return manageBotnets(ns, {action, bot, botnet, controller, quantity, ram});
+    const {action, bot, botnet, quantity = 1, ram} = flags(argsSchema);
+    return manageBotnets(ns, {action, bot, botnet, quantity, ram});
 };
 
 export default main;

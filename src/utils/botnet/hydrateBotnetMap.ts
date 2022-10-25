@@ -6,13 +6,13 @@ import {stashData} from 'utils/data/index';
 const hydrateBotnetMap = (ns: NS, mapType = 'all') => {
     const {location, suffix} = fileLocations.botnetMapCache;
     const mapFile = new MapFile(ns, `${mapType}${suffix}`, location);
-    const contents = mapFile.read() || '{}';
+    const contents = mapFile.read() || '[]';
     const parsed = JSON.parse(contents);
-    const result = Object.keys(parsed).length ? parsed : botnetMap;
+    const result = new Map([...(parsed.length ? parsed : botnetMap)]);
 
-    stashData({data: parsed, stashName: 'botnetMap'});
+    stashData({data: contents, stashName: 'botnetMap'});
 
-    return new Map(result);
+    return result;
 };
 
 export default hydrateBotnetMap;

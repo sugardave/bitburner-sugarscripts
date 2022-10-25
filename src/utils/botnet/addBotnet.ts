@@ -26,25 +26,24 @@ const addBotnet = (
     ns: NS,
     {botnet, quantity = 1, ram: rams}: BotnetManagerOptions
 ) => {
-    const botnets = hydrateBotnetMap(ns) as BotnetMap;
+    const botnetMap = hydrateBotnetMap(ns);
     const nets: string[] = Array.isArray(botnet)
         ? (botnet as string[])
         : ([botnet] as string[]);
     const ram = (rams as ScriptArg[]).pop();
     for (const net of nets) {
-        if (!botnets.has(net)) {
-            botnets.set(net, {name: net, members: []});
+        if (!botnetMap.has(net)) {
+            botnetMap.set(net, {name: net, members: []});
         }
-        if (quantity && ram) {
-            const {members = []} = botnets.get(net) as Botnet;
+        if (ram) {
+            const {members = []} = botnetMap.get(net) as Botnet;
             const added = addBot(ns, {bot: net, quantity, ram});
-            members.splice(members.length, 0, ...added);
-            botnets.set(net, {name: net, members});
+            botnetMap.set(net, {name: net, members: [...members, ...added]});
         }
     }
 
-    cacheBotnetMap(ns, botnets);
-    return botnets;
+    cacheBotnetMap(ns, botnetMap);
+    return botnetMap;
 };
 
 const main = async (ns: NS) => {
