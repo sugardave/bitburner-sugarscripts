@@ -5,16 +5,24 @@ import {
     addBot,
     addBotnet,
     botnetActions,
-    botnetFlagsSchema as customSchema,
     botnetMap,
+    getBotnetStatus,
+    getServerPriceList,
     ramOptions,
     removeBot,
     removeBotnet
 } from 'utils/botnet/index';
-import {getServerPriceList} from 'utils/botnet/getServerPriceList';
 
 const botnets = new Map(botnetMap);
 
+const customSchema: CommandFlags = [
+    ['action', ''],
+    ['bot', ''],
+    ['botnet', []],
+    ['controller', 'home'],
+    ['quantity', 1],
+    ['ram', []]
+];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
 const autocomplete = (
@@ -48,6 +56,7 @@ const manageBotnets = (
             tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
             break;
         case 'getBotnetStatus':
+            tprint(getBotnetStatus(ns));
             break;
         case 'removeBot':
             removeBot(ns, {bot});
@@ -67,8 +76,15 @@ const manageBotnets = (
 const main = async (ns: NS) => {
     const {flags} = ns;
 
-    const {action, bot, botnet, quantity = 1, ram} = flags(argsSchema);
-    return manageBotnets(ns, {action, bot, botnet, quantity, ram});
+    const {
+        action,
+        bot,
+        botnet,
+        controller = 'home',
+        quantity = 1,
+        ram
+    } = flags(argsSchema);
+    return manageBotnets(ns, {action, bot, botnet, controller, quantity, ram});
 };
 
 export default main;

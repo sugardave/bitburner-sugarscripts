@@ -1,7 +1,7 @@
 import {addBot} from 'utils/botnet/addBot';
 import {addBotnet} from 'utils/botnet/addBotnet';
 import {botnetActions} from 'utils/botnet/botnetActions';
-import {botnetFlagsSchema} from 'utils/botnet/botnetFlagsSchema';
+import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {botnetMap} from 'utils/botnet/botnetMap';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {deployScripts} from 'utils/botnet/deployScripts';
@@ -19,7 +19,7 @@ export {
     addBot,
     addBotnet,
     botnetActions,
-    botnetFlagsSchema,
+    botnetFlagsSchemas,
     botnetMap,
     cacheBotnetMap,
     deployScripts,

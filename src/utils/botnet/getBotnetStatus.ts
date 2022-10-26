@@ -1,8 +1,7 @@
 import {NS} from '@ns';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
-const getBotnetStatus = (ns: NS) => {
-    const {tprint} = ns;
+const getBotnetStatus = (ns: NS): string => {
     const botnets = hydrateBotnetMap(ns);
     const statusMessage = `\nbotnets:\n${Array.from(botnets.keys()).map(
         (botnet) => {
@@ -10,11 +9,14 @@ const getBotnetStatus = (ns: NS) => {
         }
     )}`;
 
-    tprint(statusMessage);
+    return statusMessage;
 };
 
 const main = async (ns: NS) => {
-    return getBotnetStatus(ns);
+    const {tprint} = ns;
+    const output = getBotnetStatus(ns);
+    tprint(output);
+    return output;
 };
 
 export default main;
