@@ -9,9 +9,11 @@ const deleteDataStash = ({
     stashName: string;
     stashType: string;
 }) => {
-    const stash = getDataStash();
-    doc.removeChild(stash);
+    const stash = getDataStash() as HTMLElement;
+    doc.body.removeChild(stash);
 };
 
-export default deleteDataStash;
-export {deleteDataStash};
+const main = async () => deleteDataStash({});
+
+export default main;
+export {deleteDataStash, main};

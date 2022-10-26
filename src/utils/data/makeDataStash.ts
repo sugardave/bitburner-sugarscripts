@@ -11,5 +11,7 @@ const makeDataStash = (doc = document, id = 'data-stash'): HTMLElement => {
     return el;
 };
 
-export default makeDataStash;
-export {makeDataStash};
+const main = () => makeDataStash();
+
+export default main;
+export {makeDataStash, main};
