@@ -10,7 +10,9 @@ import {
     getServerPriceList,
     ramOptions,
     removeBot,
-    removeBotnet
+    removeBotnet,
+    startAttack,
+    stopAttack
 } from 'utils/botnet/index';
 
 const botnets = new Map(botnetMap);
@@ -42,7 +44,7 @@ const autocomplete = (
 
 const manageBotnets = (
     ns: NS,
-    {action, bot, botnet, quantity, ram}: BotnetManagerOptions
+    {action, bot, botnet, quantity, ram, target}: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
     switch (action) {
@@ -65,8 +67,10 @@ const manageBotnets = (
             removeBotnet(ns, {botnet});
             break;
         case 'startAttack':
+            startAttack(ns, {botnet, target});
             break;
         case 'stopAttack':
+            stopAttack(ns, {botnet});
             break;
         default:
             break;
@@ -82,9 +86,18 @@ const main = async (ns: NS) => {
         botnet,
         controller = 'home',
         quantity = 1,
-        ram
+        ram,
+        target
     } = flags(argsSchema);
-    return manageBotnets(ns, {action, bot, botnet, controller, quantity, ram});
+    return manageBotnets(ns, {
+        action,
+        bot,
+        botnet,
+        controller,
+        quantity,
+        ram,
+        target
+    });
 };
 
 export default main;
