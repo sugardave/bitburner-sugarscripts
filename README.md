@@ -15,11 +15,27 @@ The official template for synchronizing Typescript/Javascript from your computer
 
 [Step by step install](BeginnersGuide.md)
 
-```bash
+[Learn more about Typescript](https://www.typescriptlang.org/docs/)
+
+## About
+
+This template uses the Typescript compiler and the Remote File API system to synchronize Typescript to your game.
+Due to the usage of the RFA system, it works with Web and Electron versions of the game.
+
+## Prerequisites
+
+[Node.js](https://nodejs.org/en/download/) is needed for compiling typescript and installing dependencies
+
+[See here for step by step installation](BeginnersGuide.md) if you'd like help with installing Node and/or connecting to the game.
+
+## Quick start
+
+Download the template to your computer and install everything it requires:
+```
 git clone https://github.com/bitburner-official/typescript-template
 cd typescript-template
 npm i
-```
+```bash
 
 ### How to use this template
 
@@ -61,6 +77,7 @@ To import `someFunction` from the file `main.ts` located in the `src/` directory
 ```js
 import { someFunction } from "main";
 ```
+
 ### Debugging
 
 For debugging bitburner on Steam you will need to enable a remote debugging port. This can be done by rightclicking bitburner in your Steam library and selecting properties. There you need to add `--remote-debugging-port=9222` [Thanks @DarkMio]
