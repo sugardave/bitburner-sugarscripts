@@ -21,9 +21,9 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
     return getAutocompletions({args, completionKeys});
 };
 
-const removeBotnet = (ns: NS, botnets: string[]) => {
+const removeBotnet = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
     const botnetMap = hydrateBotnetMap(ns);
-    for (const botnet of botnets) {
+    for (const botnet of botnets as string[]) {
         if (botnetMap.has(botnet)) {
             let net = botnetMap.get(botnet) as Botnet;
             const {members = []} = net;
@@ -48,8 +48,8 @@ const removeBotnet = (ns: NS, botnets: string[]) => {
 
 const main = async (ns: NS) => {
     const {flags} = ns;
-    const {botnet: botnets} = flags(argsSchema);
-    return removeBotnet(ns, botnets as string[]);
+    const {botnet} = flags(argsSchema);
+    return removeBotnet(ns, {botnet});
 };
 
 export default main;
