@@ -51,7 +51,7 @@ const wgh = async (ns: NS) => {
         sleep
     } = ns;
     const {once, target: hostname} = flags([
-        ['once', false],
+        ...argsSchema,
         ['target', getHostname()]
     ]);
     const secLevelModifier = 5;
@@ -67,11 +67,11 @@ const wgh = async (ns: NS) => {
         const currentSecurityLevel = getServerSecurityLevel(target);
         const currentFunds = getServerMoneyAvailable(target);
         if (currentSecurityLevel > maximumSecurityLevel) {
-            await weakenServer(ns, server);
+            await weakenServer(ns, server, {});
         } else if (currentFunds < minimumFundsAvailable) {
-            await growServer(ns, server);
+            await growServer(ns, server, {});
         } else {
-            await hackServer(ns, server);
+            await hackServer(ns, server, {});
         }
         await sleep(50);
     }
