@@ -7,7 +7,9 @@ import {
     botnetActions,
     botnetFlagsSchema as customSchema,
     botnetMap,
-    ramOptions
+    ramOptions,
+    removeBot,
+    removeBotnet
 } from 'utils/botnet/index';
 import {getServerPriceList} from 'utils/botnet/getServerPriceList';
 
@@ -37,7 +39,7 @@ const manageBotnets = (
     const {tprint} = ns;
     switch (action) {
         case 'addBot':
-            addBot(ns, {bot, ram} as BotnetManagerOptions);
+            addBot(ns, {bot, ram});
             break;
         case 'addBotnet':
             addBotnet(ns, {botnet, quantity, ram});
@@ -48,8 +50,10 @@ const manageBotnets = (
         case 'getBotnetStatus':
             break;
         case 'removeBot':
+            removeBot(ns, {bot});
             break;
         case 'removeBotnet':
+            removeBotnet(ns, {botnet});
             break;
         case 'startAttack':
             break;
