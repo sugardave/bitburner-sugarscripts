@@ -1,5 +1,5 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {Botnet, BotnetManagerOptions, BotnetMap, CommandFlags} from 'global';
+import {Botnet, BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';

@@ -1,5 +1,5 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {BotnetManagerOptions, Botnet, CommandFlags, BotnetMap} from 'global';
+import {BotnetManagerOptions, Botnet, CommandFlags} from 'global';
 import {getAutocompletions} from 'utils/index';
 import {addBot} from 'utils/botnet/addBot';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
