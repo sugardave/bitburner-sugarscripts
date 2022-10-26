@@ -12,9 +12,10 @@ const argsSchema: CommandFlags = [...botnetFlagsSchemas.removeBotnet];
 const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
     const {stash} = getDataStash().dataset;
     const {cache} = JSON.parse(stash as string);
-    const botnets = new Map(cache.botnetMap);
+    const {botnetMap = new Map()} = cache;
+    const botnets = new Map([...JSON.parse(botnetMap)]);
     const completionKeys = {
-        botnet: [...Array.from(botnets.keys())] as string[]
+        botnet: Array.from(botnets.keys()) as string[]
     };
     flags(argsSchema);
     return getAutocompletions({args, completionKeys});
@@ -23,15 +24,26 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 const removeBotnet = (ns: NS, botnets: string[]) => {
     const botnetMap = hydrateBotnetMap(ns);
     for (const botnet of botnets) {
-        const {members = []} = botnetMap.get(botnet) as Botnet;
-        [...members].map(({hostname}) => {
-            removeBot(ns, {bot: hostname} as BotnetManagerOptions);
-        });
-        if (!(botnetMap.get(botnet) as Botnet).members?.length) {
-            botnetMap.delete(botnet);
+        if (botnetMap.has(botnet)) {
+            let net = botnetMap.get(botnet) as Botnet;
+            const {members = []} = net;
+            [...members].map(({hostname: bot}) => {
+                if (
+                    removeBot(ns, {
+                        bot,
+                        skipCache: true
+                    } as BotnetManagerOptions)
+                ) {
+                    members.pop();
+                }
+            });
+            net = botnetMap.get(botnet) as Botnet;
+            if (!net.members?.length) {
+                botnetMap.delete(botnet);
+            }
         }
     }
-    cacheBotnetMap(ns, botnetMap as BotnetMap);
+    cacheBotnetMap(ns, botnetMap);
 };
 
 const main = async (ns: NS) => {
