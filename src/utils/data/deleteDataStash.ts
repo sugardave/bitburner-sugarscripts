@@ -1,14 +1,10 @@
 import {getDataStash} from 'utils/data/getDataStash';
 
 const deleteDataStash = ({
-    doc = document,
-    stashName,
-    stashType = 'cache'
+    doc = document
 }: {
-    doc: Document;
-    stashName: string;
-    stashType: string;
-}) => {
+    doc?: Document;
+} = {}) => {
     const stash = getDataStash() as HTMLElement;
     doc.body.removeChild(stash);
 };

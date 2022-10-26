@@ -1,20 +1,23 @@
 import {makeDataStash} from 'utils/data/makeDataStash';
+import {BotnetMap} from 'global';
 
 const stashData = ({
-    data,
+    data = new Map(),
     doc = document,
     stashName,
     stashType = 'cache'
 }: {
     data: string | Map<string, unknown>;
-    doc?: Document;
     stashName: string;
+    doc?: Document;
     stashType?: string;
 }) => {
     const stash = {
         [stashType]: {
             [stashName]:
-                data instanceof String ? JSON.parse(data as string) : data
+                typeof data === 'string'
+                    ? JSON.parse(data as string)
+                    : Array.from((data as BotnetMap).entries())
         }
     };
     const el = makeDataStash(doc);
