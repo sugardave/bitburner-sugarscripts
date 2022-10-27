@@ -1,18 +1,16 @@
 import {NS, ScriptArg} from '@ns';
-import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
+import {Executor, CommandFlags, NetServer} from 'global';
 import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
 import {isPlayerOwned, isServerRooted} from 'utils/discovery/index';
 import {MapFile} from 'utils/io/index';
-
-type NetServerMap = {
-    map: ServerMapEntry;
-    file: MapFile;
-};
+import {hydrateServerMap, NetServerMap} from 'utils/nmap/hydrateServerMap';
 
 type NetServerMaps = {
     [key: string]: NetServerMap;
 };
+
+const serverMaps: NetServerMaps = {};
 
 const customSchema: CommandFlags = [['rescan', false]];
 const argsSchema: CommandFlags = [...customSchema];
@@ -20,20 +18,6 @@ const argsSchema: CommandFlags = [...customSchema];
 const autocomplete = ({flags}: NS, args: ScriptArg[]) => {
     flags(argsSchema);
     return getAutocompletions({args});
-};
-
-const serverMaps: NetServerMaps = {};
-
-const hydrateServerMap = ({map, file}: NetServerMap) => {
-    map.clear();
-    if (file instanceof MapFile) {
-        JSON.parse(file.read() as string).map(
-            ([key, value]: [key: string, value: NetServer]) => {
-                map.set(key, value);
-            }
-        );
-    }
-    return map;
 };
 
 const addToMap: Executor = (ns: NS, server: NetServer) => {
@@ -83,7 +67,11 @@ const mapServers = (ns: NS) => {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
             if (MapFile.exists(file.getFilePath())) {
-                hydrateServerMap({map, file});
+                hydrateServerMap(
+                    ns,
+                    {map, file},
+                    {skipStash: false, stashName: 'nmapCache'}
+                );
             }
             if (group === 'all' && !map.size) {
                 tprint(

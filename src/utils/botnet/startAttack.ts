@@ -17,7 +17,11 @@ const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 // TODO: investigate turning this into an Executor or changing to a different option type
 const startAttack = (ns: NS, {botnet: botnets, target}: ExecutorOptions) => {
     const {exec, tprint} = ns;
-    const botnetMap = hydrateBotnetMap(ns) as BotnetMap;
+    const botnetMap = hydrateBotnetMap(ns, {
+        mapType: 'all',
+        skipStash: false,
+        stashName: 'botnetMap'
+    }) as BotnetMap;
     (botnets as string[]).map((botnet) => {
         botnetMap.get(botnet)?.members?.map(({hostname}: BotServer) => {
             if (!deployScripts(ns, {hostname} as NetServer, {})) {

@@ -7,7 +7,11 @@ const argsSchema: CommandFlags = [...botnetFlagsSchemas.stopAttack];
 
 const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
     const {killall} = ns;
-    const botnetMap = hydrateBotnetMap(ns) as BotnetMap;
+    const botnetMap = hydrateBotnetMap(ns, {
+        mapType: 'all',
+        skipStash: false,
+        stashName: 'botnetMap'
+    }) as BotnetMap;
     for (const botnet of botnets as string[]) {
         if (botnetMap.size && botnetMap.has(botnet)) {
             botnetMap.get(botnet)?.members?.map(({hostname}) => {

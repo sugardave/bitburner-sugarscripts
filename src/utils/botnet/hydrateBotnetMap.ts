@@ -1,23 +1,34 @@
 import {NS} from '@ns';
-import {fileLocations, MapFile} from 'utils/io/index';
-import {botnetMap} from 'utils/botnet/botnetMap';
-import {stashData} from 'utils/data/index';
+import {fileLocations} from 'utils/io/index';
+import {hydrateMap} from 'utils/hydrateMap';
 import {BotnetMap} from 'global';
 
-const hydrateBotnetMap = (ns: NS, mapType = 'all') => {
+const hydrateBotnetMap = (
+    ns: NS,
+    {mapType = 'all', skipStash = false, stashName = 'botnetMap'}
+) => {
     const {location, suffix} = fileLocations.botnetMapCache;
-    const mapFile = new MapFile(ns, `${mapType}${suffix}`, location);
-    const contents = mapFile.read() || '[]';
-    const parsed = JSON.parse(contents);
-    const result: BotnetMap = new Map([
-        ...(parsed.length ? parsed : botnetMap)
-    ]);
 
-    stashData({data: contents, stashName: 'botnetMap'});
-    return result;
+    return hydrateMap(
+        ns,
+        {filename: `${mapType}${suffix}`, location},
+        {skipStash, stashName}
+    ) as BotnetMap;
 };
 
-const main = async (ns: NS) => hydrateBotnetMap(ns);
+const main = async (ns: NS) => {
+    const {flags} = ns;
+    const {mapType, skipStash, stashName} = flags([
+        ['mapType', 'all'],
+        ['skipStash', false],
+        ['stashName', 'botnetMap']
+    ]);
+    return hydrateBotnetMap(ns, {mapType, skipStash, stashName} as {
+        mapType: string;
+        skipStash: boolean;
+        stashName: string;
+    });
+};
 
 export default main;
 export {hydrateBotnetMap, main};
