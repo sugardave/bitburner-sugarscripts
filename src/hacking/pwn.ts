@@ -1,6 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {Autocompletions, CommandFlags, Executor, NetServer} from 'global';
-import {commonSchema, crackPorts, getAutocompletions} from 'utils/index';
+import {commonSchema, getAutocompletions} from 'utils/index';
+import {crackPorts} from 'utils/hacking/crackPorts';
 
 const argsSchema: CommandFlags = [...commonSchema];
 
