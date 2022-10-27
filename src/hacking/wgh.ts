@@ -40,24 +40,18 @@ const weakenServer: Executor = async (
     await weaken(target as string);
 };
 
-const wgh = async (ns: NS) => {
+const wgh: Executor = async (ns: NS, {hostname}: NetServer, {once}) => {
     const {
-        flags,
-        getHostname,
         getServerMaxMoney,
         getServerMoneyAvailable,
         getServerMinSecurityLevel,
         getServerSecurityLevel,
         sleep
     } = ns;
-    const {once, target: hostname} = flags([
-        ...argsSchema,
-        ['target', getHostname()]
-    ]);
     const secLevelModifier = 5;
     const fundsModifier = 0.75;
     const server = new Server(hostname as string);
-    const target: string = server.hostname as string;
+    const target = hostname as string;
 
     const maximumSecurityLevel =
         getServerMinSecurityLevel(target) + secLevelModifier;
@@ -77,7 +71,15 @@ const wgh = async (ns: NS) => {
     }
 };
 
-const main = async (ns: NS) => await wgh(ns);
+const main = async (ns: NS) => {
+    const {flags, getHostname} = ns;
+    const {once, target: hostname} = flags([
+        ...argsSchema,
+        ['target', getHostname()]
+    ]);
+
+    return await wgh(ns, {hostname} as NetServer, {once});
+};
 
 export default main;
-export {autocomplete, main};
+export {autocomplete, growServer, hackServer, weakenServer, main, wgh};
