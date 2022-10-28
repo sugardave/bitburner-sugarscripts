@@ -6,7 +6,9 @@ import {
     Executor,
     NetServer
 } from 'global';
-import {commonSchema, getAutocompletions, Server} from 'utils/index';
+import {Server} from 'utils/index';
+import {commonSchema} from 'utils/commonSchema';
+import {getAutocompletions} from 'utils/getAutocompletions';
 
 const customSchema: CommandFlags = [['once', false]];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
