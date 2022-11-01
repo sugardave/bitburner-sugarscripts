@@ -23,7 +23,8 @@ const customSchema: CommandFlags = [
     ['botnet', []],
     ['controller', 'home'],
     ['quantity', 1],
-    ['ram', []]
+    ['ram', []],
+    ['threads', 1]
 ];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
@@ -44,7 +45,15 @@ const autocomplete = (
 
 const manageBotnets = (
     ns: NS,
-    {action, bot, botnet, quantity, ram, target}: BotnetManagerOptions
+    {
+        action,
+        bot,
+        botnet,
+        quantity,
+        ram,
+        target,
+        threads = 1
+    }: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
     switch (action) {
@@ -67,7 +76,7 @@ const manageBotnets = (
             removeBotnet(ns, {botnet});
             break;
         case 'startAttack':
-            startAttack(ns, {botnet, target});
+            startAttack(ns, {botnet, target, threads});
             break;
         case 'stopAttack':
             stopAttack(ns, {botnet});
@@ -87,7 +96,8 @@ const main = async (ns: NS) => {
         controller = 'home',
         quantity = 1,
         ram,
-        target
+        target,
+        threads = 1
     } = flags(argsSchema);
     return manageBotnets(ns, {
         action,
@@ -96,7 +106,8 @@ const main = async (ns: NS) => {
         controller,
         quantity,
         ram,
-        target
+        target,
+        threads
     });
 };
 
