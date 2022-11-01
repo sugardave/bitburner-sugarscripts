@@ -1,3 +1,4 @@
+import {deleteDataStash} from 'utils/data/deleteDataStash';
 import {makeDataStash} from 'utils/data/makeDataStash';
 import {BotnetMap} from 'global';
 
@@ -20,6 +21,7 @@ const stashData = ({
                     : Array.from((data as BotnetMap).entries())
         }
     };
+    deleteDataStash();
     const el = makeDataStash(doc);
     const attr = doc.createAttribute(el.id);
     attr.value = JSON.stringify(stash);

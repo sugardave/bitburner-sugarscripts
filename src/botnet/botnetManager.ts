@@ -9,6 +9,7 @@ import {
     getBotnetStatus,
     getServerPriceList,
     ramOptions,
+    refreshBotnetMap,
     removeBot,
     removeBotnet,
     startAttack,
@@ -56,6 +57,9 @@ const manageBotnets = (
     }: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
+
+    //refresh botnet map
+    refreshBotnetMap(ns);
     switch (action) {
         case 'addBot':
             addBot(ns, {bot, ram});

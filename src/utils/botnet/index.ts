@@ -10,6 +10,7 @@ import {getBotnetStatus} from 'utils/botnet/getBotnetStatus';
 import {getServerPriceList} from 'utils/botnet/getServerPriceList';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 import {ramOptions} from 'utils/botnet/ramOptions';
+import {refreshBotnetMap} from 'utils/botnet/refreshBotnetMap';
 import {removeBot} from 'utils/botnet/removeBot';
 import {removeBotnet} from 'utils/botnet/removeBotnet';
 import {startAttack} from 'utils/botnet/startAttack';
@@ -28,6 +29,7 @@ export {
     getServerPriceList,
     hydrateBotnetMap,
     ramOptions,
+    refreshBotnetMap,
     removeBot,
     removeBotnet,
     startAttack,
