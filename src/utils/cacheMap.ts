@@ -6,21 +6,24 @@ import {hydrateMap} from 'utils/hydrateMap';
 const cacheMap = (
     ns: NS,
     {
-        map,
+        contents,
         filename,
         location
-    }: {map: Map<string, unknown>; filename: string; location: string},
+    }: {
+        contents: string;
+        filename: string;
+        location: string;
+    },
     {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
 ) => {
     const mapFile = new MapFile(ns, filename, location);
-    const contents = JSON.stringify(Array.from(map.entries()));
 
     mapFile.write(contents);
     if (!skipStash) {
         stashData({data: contents, stashName});
     }
 
-    return map;
+    return contents;
 };
 
 const main = async (ns: NS) => {
@@ -31,7 +34,7 @@ const main = async (ns: NS) => {
         ['skipStash', false],
         ['stashName', '']
     ]);
-    const map = hydrateMap(
+    const contents = hydrateMap(
         ns,
         {filename, location} as {filename: string; location: string},
         {
@@ -42,8 +45,8 @@ const main = async (ns: NS) => {
 
     return cacheMap(
         ns,
-        {map, filename, location} as {
-            map: Map<string, unknown>;
+        {contents, filename, location} as {
+            contents: string;
             filename: string;
             location: string;
         },

@@ -13,18 +13,24 @@ const cacheBotnetMap = (
         stashName = 'botnetMap'
     }: {
         botnetMap: Map<string, unknown>;
-        mapType: string;
-        skipStash: boolean;
-        stashName: string;
+        mapType?: string;
+        skipStash?: boolean;
+        stashName?: string;
     }
 ) => {
     const {location, suffix} = fileLocations.botnetMapCache;
+    const contents = JSON.stringify(Array.from(botnetMap), (k, v) => {
+        if (v instanceof Set) {
+            return [...v];
+        }
+        return v;
+    });
 
     return cacheMap(
         ns,
-        {map: botnetMap, filename: `${mapType}${suffix}`, location},
+        {contents, filename: `${mapType}${suffix}`, location},
         {skipStash, stashName}
-    ) as BotnetMap;
+    );
 };
 
 const main = async (ns: NS) => {
@@ -34,7 +40,7 @@ const main = async (ns: NS) => {
         ['skipStash', false],
         ['stashName', 'botnetMap']
     ]);
-    const botnetMap: BotnetMap = hydrateBotnetMap(ns, {
+    const contents = hydrateBotnetMap(ns, {
         mapType,
         skipStash: true, // skip stash for this hydration
         stashName
@@ -43,6 +49,9 @@ const main = async (ns: NS) => {
         skipStash: boolean;
         stashName: string;
     });
+    const botnetMap = JSON.parse(contents, (k, v) =>
+        k === '' ? new Set(v) : v
+    );
 
     return cacheBotnetMap(ns, {botnetMap, mapType, skipStash, stashName} as {
         botnetMap: BotnetMap;

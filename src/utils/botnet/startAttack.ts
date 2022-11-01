@@ -1,11 +1,5 @@
 import {NS} from '@ns';
-import {
-    BotnetMap,
-    BotServer,
-    CommandFlags,
-    ExecutorOptions,
-    NetServer
-} from 'global';
+import {BotnetMap, CommandFlags, ExecutorOptions, NetServer} from 'global';
 import {deployScripts} from 'utils/botnet/deployScripts';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {commonSchema} from 'utils/index';
@@ -25,21 +19,23 @@ const startAttack = (
         skipStash: false,
         stashName: 'botnetMap'
     }) as BotnetMap;
-    (botnets as string[]).map((botnet) => {
-        botnetMap.get(botnet)?.members?.map(({hostname}: BotServer) => {
-            if (!deployScripts(ns, {hostname} as NetServer, {})) {
-                tprint(`failed to deploy attack scripts to ${hostname}`);
-            } else {
-                // attack!
-                exec(
-                    `hacking/wgh.js`,
-                    hostname as string,
-                    threads as number,
-                    `--target`,
-                    target as string
-                );
-            }
-        });
+    (botnets as string[]).map((net) => {
+        const botnet = botnetMap.get(net);
+        botnet &&
+            [...botnet.values()].map((hostname) => {
+                if (!deployScripts(ns, {hostname} as NetServer, {})) {
+                    tprint(`failed to deploy attack scripts to ${hostname}`);
+                } else {
+                    // attack!
+                    exec(
+                        `hacking/wgh.js`,
+                        hostname as string,
+                        threads as number,
+                        `--target`,
+                        target as string
+                    );
+                }
+            });
     });
 };
 

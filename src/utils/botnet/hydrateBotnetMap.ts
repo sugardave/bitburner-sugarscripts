@@ -1,19 +1,22 @@
 import {NS} from '@ns';
 import {fileLocations} from 'utils/io/index';
 import {hydrateMap} from 'utils/hydrateMap';
-import {BotnetMap} from 'global';
 
 const hydrateBotnetMap = (
     ns: NS,
     {mapType = 'all', skipStash = false, stashName = 'botnetMap'}
 ) => {
     const {location, suffix} = fileLocations.botnetMapCache;
-
-    return hydrateMap(
+    const contents = hydrateMap(
         ns,
         {filename: `${mapType}${suffix}`, location},
         {skipStash, stashName}
-    ) as BotnetMap;
+    );
+    const botnetMap = JSON.parse(contents, (k, v) =>
+        k === '' ? new Set(v) : v
+    );
+
+    return botnetMap;
 };
 
 const main = async (ns: NS) => {

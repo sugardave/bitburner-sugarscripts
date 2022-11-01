@@ -22,12 +22,12 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 };
 
 const removeBotnet = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
-    const botnetMap = hydrateBotnetMap(ns);
-    for (const botnet of botnets as string[]) {
-        if (botnetMap.has(botnet)) {
-            let net = botnetMap.get(botnet) as Botnet;
-            const {members = []} = net;
-            [...members].map(({hostname: bot}) => {
+    const botnetMap = hydrateBotnetMap(ns, {});
+    for (const botnetName of botnets as string[]) {
+        if (botnetMap.has(botnetName)) {
+            let botnet = botnetMap.get(botnetName) as Botnet;
+            const members = botnet ? [...botnet.values()] : [];
+            members.map((bot) => {
                 if (
                     removeBot(ns, {
                         bot,
@@ -37,13 +37,13 @@ const removeBotnet = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
                     members.pop();
                 }
             });
-            net = botnetMap.get(botnet) as Botnet;
-            if (!net.members?.length) {
-                botnetMap.delete(botnet);
+            botnet = botnetMap.get(botnetName) as Botnet;
+            if (!members.length) {
+                botnetMap.delete(botnetName);
             }
         }
     }
-    cacheBotnetMap(ns, botnetMap);
+    cacheBotnetMap(ns, {botnetMap});
 };
 
 const main = async (ns: NS) => {

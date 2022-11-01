@@ -57,15 +57,16 @@ const manageBotnets = (
     }: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
+    let refresh = false;
 
-    //refresh botnet map
-    refreshBotnetMap(ns);
     switch (action) {
         case 'addBot':
             addBot(ns, {bot, ram});
+            refresh = true;
             break;
         case 'addBotnet':
             addBotnet(ns, {botnet, quantity, ram});
+            refresh = true;
             break;
         case 'checkPricing':
             tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
@@ -75,9 +76,11 @@ const manageBotnets = (
             break;
         case 'removeBot':
             removeBot(ns, {bot});
+            refresh = true;
             break;
         case 'removeBotnet':
             removeBotnet(ns, {botnet});
+            refresh = true;
             break;
         case 'startAttack':
             startAttack(ns, {botnet, target, threads});
@@ -87,6 +90,11 @@ const manageBotnets = (
             break;
         default:
             break;
+    }
+
+    if (refresh) {
+        //refresh botnet map
+        refreshBotnetMap(ns);
     }
 };
 

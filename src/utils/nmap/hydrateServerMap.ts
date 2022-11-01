@@ -1,47 +1,40 @@
 import {NS} from '@ns';
-import {ServerMapEntry} from 'global';
 import {MapFile} from 'utils/io/MapFile';
 import {hydrateMap} from 'utils/hydrateMap';
-
-type NetServerMap = {
-    file: MapFile;
-    map: ServerMapEntry;
-};
+import {fileLocations} from 'utils/io/index';
 
 const hydrateServerMap = (
     ns: NS,
-    {file, map}: NetServerMap,
+    file: MapFile,
     {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
 ) => {
-    let clone = new Map(map) as Map<string, ServerMapEntry>;
-    if (file instanceof MapFile) {
-        clone = hydrateMap(ns, file, {
-            skipStash,
-            stashName
-        }) as Map<string, ServerMapEntry>;
-    }
+    const contents = hydrateMap(ns, file, {
+        skipStash,
+        stashName
+    });
+    const botnetMap = new Map(JSON.parse(contents));
 
-    return clone;
+    return botnetMap;
 };
 
 const main = async (ns: NS) => {
     const {flags} = ns;
 
     const {
-        filename,
-        location,
+        file,
+        location = fileLocations.nmapCache.location,
         skipStash = false,
         stashName = 'nmapCache'
     } = flags([
-        ['filename', ''],
+        ['file', ''],
         ['location', '']
     ]);
     return hydrateServerMap(
         ns,
-        {file: {name: filename, location} as MapFile, map: new Map()},
+        new MapFile(ns, file as string, location as string),
         {skipStash, stashName} as {skipStash: boolean; stashName: string}
     );
 };
 
 export default main;
-export {hydrateServerMap, main, NetServerMap};
+export {hydrateServerMap, main};

@@ -1,5 +1,5 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {Botnet, BotnetManagerOptions, CommandFlags} from 'global';
+import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {generateBotnetName} from 'utils/botnet/generateBotnetName';
@@ -22,24 +22,24 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 
 const removeBot = (ns: NS, {bot}: BotnetManagerOptions) => {
     const {deleteServer, killall, serverExists} = ns;
-    const botnets = hydrateBotnetMap(ns);
+    const botnetMap = hydrateBotnetMap(ns, {});
     const botName: string = bot as string;
     const botnetName = generateBotnetName(botName);
     let deleted = false;
     if (serverExists(botName)) {
         killall(botName);
         deleted = deleteServer(botName);
-        if (!botnets.has(botnetName)) {
-            botnets.set(botnetName, {name: botnetName, members: []});
+        if (!botnetMap.has(botnetName)) {
+            botnetMap.set(botnetName, new Set());
         }
-        const {members = []} = botnets.get(botnetName) as Botnet;
-        botnets.set(botnetName, {
-            name: botnetName,
-            members: members.filter(({hostname}) => {
+        const botnet = botnetMap.get(botnetName);
+        const members = botnet ? [...botnet.values()] : [];
+        members
+            .filter((hostname) => {
                 return hostname !== botName;
             })
-        });
-        cacheBotnetMap(ns, botnets);
+            .map((m) => botnet?.add(m));
+        cacheBotnetMap(ns, {botnetMap});
     }
 
     return deleted;

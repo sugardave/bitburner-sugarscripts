@@ -2,11 +2,13 @@ import {NS} from '@ns';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
 const getBotnetStatus = (ns: NS): string => {
-    const botnets = hydrateBotnetMap(ns, {
+    const contents = hydrateBotnetMap(ns, {
         mapType: 'all',
         skipStash: false,
         stashName: 'botnetMap'
     });
+    const parsed = JSON.parse(contents);
+    const botnets = new Map(parsed);
     const statusMessage = `\nbotnets:\n${Array.from(botnets.keys()).map(
         (botnet) => {
             return `${botnet}\n`;

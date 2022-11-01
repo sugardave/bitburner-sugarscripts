@@ -37,11 +37,8 @@ type CommandFlags = CommandFlag[];
 
 // botnet
 type BotServer = {memberOf: string} & Partial<NetServer>;
-type Botnet = {
-    name: string;
-    members?: BotServer[];
-};
-type BotnetMap = Map<Botnet['name'], Botnet>;
+type Botnet = Set<BotServer['hostname']>;
+type BotnetMap = Map<string, Botnet>;
 
 type BotnetManagerOptions = {
     [name: string]: ScriptArg | ScriptArg[];

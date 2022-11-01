@@ -9,16 +9,12 @@ const hydrateMap = (
 ) => {
     const mapFile = new MapFile(ns, filename, location);
     const contents = mapFile.read() || '[]';
-    const parsed = JSON.parse(contents);
-    const map: Map<string, unknown> = new Map([
-        ...(parsed.length ? parsed : new Map())
-    ]);
 
     if (!skipStash) {
         stashData({data: contents, stashName});
     }
 
-    return map;
+    return contents;
 };
 
 const main = async (ns: NS) => {

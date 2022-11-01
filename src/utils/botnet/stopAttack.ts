@@ -1,5 +1,5 @@
 import {NS} from '@ns';
-import {BotnetManagerOptions, BotnetMap, CommandFlags} from 'global';
+import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
@@ -11,13 +11,13 @@ const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
         mapType: 'all',
         skipStash: false,
         stashName: 'botnetMap'
-    }) as BotnetMap;
-    for (const botnet of botnets as string[]) {
-        if (botnetMap.size && botnetMap.has(botnet)) {
-            botnetMap.get(botnet)?.members?.map(({hostname}) => {
-                killall(hostname);
-            });
-        }
+    });
+
+    for (const net of botnets as string[]) {
+        const botnet = botnetMap.get(net);
+        [...botnet.values()].map((hostname) => {
+            killall(hostname);
+        });
     }
 };
 

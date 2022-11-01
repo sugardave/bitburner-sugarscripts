@@ -5,19 +5,13 @@ import {generateBotnetName} from 'utils/botnet/generateBotnetName';
 const botnetMap = new Map();
 
 const sortBot = (bot: string) => {
-    const botnet = generateBotnetName(bot);
-    if (!botnetMap.has(botnet)) {
-        botnetMap.set(botnet, {members: [], name: botnet});
+    const botnetName = generateBotnetName(bot);
+    if (!botnetMap.has(botnetName)) {
+        botnetMap.set(botnetName, new Set());
     }
-    const {members = []} = botnetMap.get(botnet);
-    if (
-        members.findIndex(({hostname}: {hostname: string}) => {
-            hostname === bot;
-        }) < 0
-    ) {
-        members.push({hostname: bot, memberOf: botnet});
-    }
-    botnetMap.set(botnet, {members, name: botnet});
+    const botnet = botnetMap.get(botnetName);
+    botnet.add(bot);
+    botnetMap.set(botnetName, botnet);
 };
 
 const refreshBotnetMap = (ns: NS) => {
