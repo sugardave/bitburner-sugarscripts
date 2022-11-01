@@ -9,7 +9,7 @@ const hydrateBotnetMap = (
     const {location, suffix} = fileLocations.botnetMapCache;
     const contents = hydrateMap(
         ns,
-        {filename: `${mapType}${suffix}`, location},
+        {name: `${mapType}${suffix}`, location},
         {skipStash, stashName}
     );
     const botnetMap = JSON.parse(contents, (k, v) =>

@@ -28,7 +28,7 @@ const cacheBotnetMap = (
 
     return cacheMap(
         ns,
-        {contents, filename: `${mapType}${suffix}`, location},
+        {contents, name: `${mapType}${suffix}`, location},
         {skipStash, stashName}
     );
 };

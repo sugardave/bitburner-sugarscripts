@@ -7,16 +7,16 @@ const cacheMap = (
     ns: NS,
     {
         contents,
-        filename,
+        name,
         location
     }: {
         contents: string;
-        filename: string;
+        name: string;
         location: string;
     },
     {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
 ) => {
-    const mapFile = new MapFile(ns, filename, location);
+    const mapFile = new MapFile(ns, name, location);
 
     mapFile.write(contents);
     if (!skipStash) {
@@ -28,7 +28,12 @@ const cacheMap = (
 
 const main = async (ns: NS) => {
     const {flags} = ns;
-    const {filename, location, skipStash, stashName} = flags([
+    const {
+        filename: name,
+        location,
+        skipStash,
+        stashName
+    } = flags([
         ['filename', ''],
         ['location', ''],
         ['skipStash', false],
@@ -36,7 +41,7 @@ const main = async (ns: NS) => {
     ]);
     const contents = hydrateMap(
         ns,
-        {filename, location} as {filename: string; location: string},
+        {name, location} as {name: string; location: string},
         {
             skipStash: true, // skip stash for this hydration
             stashName
@@ -45,9 +50,9 @@ const main = async (ns: NS) => {
 
     return cacheMap(
         ns,
-        {contents, filename, location} as {
+        {contents, name, location} as {
             contents: string;
-            filename: string;
+            name: string;
             location: string;
         },
         {skipStash, stashName} as {skipStash: boolean; stashName: string}

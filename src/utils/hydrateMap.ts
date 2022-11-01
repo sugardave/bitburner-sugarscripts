@@ -4,10 +4,10 @@ import {stashData} from 'utils/data/index';
 
 const hydrateMap = (
     ns: NS,
-    {filename, location}: {filename: string; location: string},
+    {name, location}: {name: string; location: string},
     {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
 ) => {
-    const mapFile = new MapFile(ns, filename, location);
+    const mapFile = new MapFile(ns, name, location);
     const contents = mapFile.read() || '[]';
 
     if (!skipStash) {
@@ -19,7 +19,12 @@ const hydrateMap = (
 
 const main = async (ns: NS) => {
     const {flags} = ns;
-    const {filename, location, skipStash, stashName} = flags([
+    const {
+        filename: name,
+        location,
+        skipStash,
+        stashName
+    } = flags([
         ['filename', ''],
         ['location', ''],
         ['skipStash', false],
@@ -28,7 +33,7 @@ const main = async (ns: NS) => {
 
     return hydrateMap(
         ns,
-        {filename, location} as {filename: string; location: string},
+        {name, location} as {name: string; location: string},
         {skipStash, stashName} as {skipStash: boolean; stashName: string}
     );
 };
