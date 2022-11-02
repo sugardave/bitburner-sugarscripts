@@ -15,7 +15,8 @@ const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
 
     for (const net of botnets as string[]) {
         const botnet = botnetMap.get(net);
-        [...botnet.values()].map((hostname) => {
+        const members = botnet ? [...botnet.values()] : [];
+        members.map((hostname) => {
             killall(hostname);
         });
     }
