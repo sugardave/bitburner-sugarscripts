@@ -1,5 +1,4 @@
 //TODO: documentation.  make some.
-
 import {NS, Server, ScriptArg} from '@ns';
 
 type ServerChain = {
@@ -9,6 +8,9 @@ type ServerChain = {
 type ServerMapEntry = Map<NetServer['hostname'], Partial<Server>>;
 
 type NetServer = Partial<Server> & Partial<ServerChain>;
+type NetServerDetails = {
+    [key: string]: ScriptArg;
+};
 
 type ExecutorOptions = Record<string, unknown>;
 
@@ -44,6 +46,24 @@ type BotnetManagerOptions = {
     [name: string]: ScriptArg | ScriptArg[];
 };
 
+// discovery
+// listServers
+type OperatorFunction = (a: number | string, b: number | string) => boolean;
+
+type Operators = {
+    [operator: string]: OperatorFunction;
+};
+
+type SortField = string;
+
+type SortFields = {
+    [sortField: SortField]: string;
+};
+
+type SortOption = {
+    [sortOption: string]: string;
+};
+
 export {
     Autocompleter,
     AutocompletionArgs,
@@ -58,5 +78,11 @@ export {
     Executor,
     ExecutorOptions,
     NetServer,
-    ServerMapEntry
+    NetServerDetails,
+    OperatorFunction,
+    Operators,
+    ServerMapEntry,
+    SortField,
+    SortFields,
+    SortOption
 };
