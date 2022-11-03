@@ -28,7 +28,7 @@ class GameFile {
         return read(thisFile) as string;
     }
 
-    write(contents: string | number | string[], append = false) {
+    write(contents: string, append = false) {
         const {write} = GameFile.ns;
         const thisFile = this.getFilePath();
         return write(thisFile, contents, append ? 'a' : 'w');
