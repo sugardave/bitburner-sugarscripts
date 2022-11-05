@@ -1,6 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
-import {Botnet, BotnetManagerOptions, BotServer, CommandFlags} from 'global';
+import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {generateBotnetName} from 'utils/botnet/generateBotnetName';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
@@ -29,29 +30,32 @@ const addBot = (
     {bot, quantity = 1, ram: rams = ramOptions}: BotnetManagerOptions
 ) => {
     const {purchaseServer} = ns;
-    const botnetMap = hydrateBotnetMap(ns);
+    let botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
+    if (!botnetMap || !botnetMap.size || !(botnetMap instanceof Map)) {
+        botnetMap = new Map();
+    }
     const botnetName = generateBotnetName(bot as string);
     const ram = Array.isArray(rams) ? (rams as ScriptArg[]).pop() : rams;
-    const added: BotServer[] = [];
+    const added: string[] = [];
 
     for (let i = 0; i < quantity; i += 1) {
         const hostname = purchaseServer(botnetName, ram as number);
         const purchased = !!hostname;
         if (purchased) {
-            const member = {hostname, memberOf: botnetName};
+            const member = hostname;
             added.push(member);
             if (!botnetMap.has(botnetName)) {
-                botnetMap.set(botnetName, {name: botnetName, members: []});
+                botnetMap.set(botnetName, new Set());
             }
-            const {members = []} = botnetMap.get(botnetName) as Botnet;
-            botnetMap.set(botnetName, {
-                name: botnetName,
-                members: [...members, member]
+            const botnet = botnetMap.get(botnetName);
+            const members = botnet ? [...botnet.values()] : [];
+            [...members, ...added].map((hostname) => {
+                botnet?.add(hostname);
             });
         }
     }
 
-    cacheBotnetMap(ns, botnetMap);
+    cacheBotnetMap(ns, {botnetMap});
     return added;
 };
 

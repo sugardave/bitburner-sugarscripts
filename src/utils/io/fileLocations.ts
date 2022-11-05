@@ -1,10 +1,10 @@
 const fileLocations = {
-    botnetMapCache: {
+    botnetMap: {
         location: '/botnet/maps',
         maps: ['active', 'all', 'idle'],
         suffix: '-botnets.txt'
     },
-    nmapCache: {
+    nmap: {
         location: '/trove/maps',
         maps: ['all', 'owned', 'pwned'],
         suffix: '-servers.txt'

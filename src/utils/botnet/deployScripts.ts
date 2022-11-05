@@ -10,7 +10,12 @@ const deployScripts: Executor = (
     {hostname}: NetServer,
     {origin = 'home'}: ExecutorOptions
 ) => {
-    const files = ['/hacking/wgh.js', '/utils/index.js'];
+    const files = [
+        '/hacking/wgh.js',
+        '/utils/index.js',
+        '/utils/commonSchema.js',
+        '/utils/getAutocompletions.js'
+    ];
     return deployFiles(ns, {hostname}, {files, origin});
 };
 

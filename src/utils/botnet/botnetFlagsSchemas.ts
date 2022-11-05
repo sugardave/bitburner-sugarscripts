@@ -28,7 +28,8 @@ const botnetFlagsSchemas: BotnetCommandFlags = {
     removeBotnet: [['botnet', []]],
     startAttack: [
         ['bot', []],
-        ['botnet', []]
+        ['botnet', []],
+        ['threads', 1]
     ],
     stopAttack: [
         ['bot', []],

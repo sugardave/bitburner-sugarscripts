@@ -1,13 +1,14 @@
 import {NS} from '@ns';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
 const getBotnetStatus = (ns: NS): string => {
-    const botnets = hydrateBotnetMap(ns);
-    const statusMessage = `\nbotnets:\n${Array.from(botnets.keys()).map(
-        (botnet) => {
-            return `${botnet}\n`;
-        }
-    )}`;
+    const botnetMap = hydrateBotnetMap(ns, {
+        mapType: 'all',
+        skipStash: false,
+        stash: {id: 'botnetMap', reviver}
+    });
+    const statusMessage = `\nbotnets:\n${Array.from(botnetMap.keys())}`;
 
     return statusMessage;
 };

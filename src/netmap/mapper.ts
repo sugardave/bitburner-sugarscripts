@@ -1,17 +1,41 @@
 import {NS, ScriptArg} from '@ns';
-import {Executor, CommandFlags, NetServer, ServerMapEntry} from 'global';
+import {Executor, CommandFlags, NetServer, NetServerMap} from 'global';
 import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
 import {isPlayerOwned, isServerRooted} from 'utils/discovery/index';
-import {MapFile} from 'utils/io/index';
-
-type NetServerMap = {
-    map: ServerMapEntry;
-    file: MapFile;
-};
+import {fileLocations, MapFile} from 'utils/io/index';
+import {
+    hydrateServerMap,
+    nmapReplacer as replacer,
+    nmapReviver as reviver
+} from 'utils/nmap/index';
 
 type NetServerMaps = {
-    [key: string]: NetServerMap;
+    [mapType: string]: {
+        file: MapFile | undefined;
+        fileInfo: {filename: MapFile['name']; location: MapFile['location']};
+        map: NetServerMap;
+    };
+};
+
+const {location, suffix} = fileLocations.nmap;
+
+const serverMaps: NetServerMaps = {
+    all: {
+        file: undefined,
+        fileInfo: {filename: `all${suffix}`, location},
+        map: new Map()
+    },
+    owned: {
+        file: undefined,
+        fileInfo: {filename: `owned${suffix}`, location},
+        map: new Map()
+    },
+    pwned: {
+        file: undefined,
+        fileInfo: {filename: `pwned${suffix}`, location},
+        map: new Map()
+    }
 };
 
 const customSchema: CommandFlags = [['rescan', false]];
@@ -20,20 +44,6 @@ const argsSchema: CommandFlags = [...customSchema];
 const autocomplete = ({flags}: NS, args: ScriptArg[]) => {
     flags(argsSchema);
     return getAutocompletions({args});
-};
-
-const serverMaps: NetServerMaps = {};
-
-const hydrateServerMap = ({map, file}: NetServerMap) => {
-    map.clear();
-    if (file instanceof MapFile) {
-        JSON.parse(file.read() as string).map(
-            ([key, value]: [key: string, value: NetServer]) => {
-                map.set(key, value);
-            }
-        );
-    }
-    return map;
 };
 
 const addToMap: Executor = (ns: NS, server: NetServer) => {
@@ -61,10 +71,13 @@ const addToMap: Executor = (ns: NS, server: NetServer) => {
 
 const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
     for (const group of groups) {
-        serverMaps[group] = {
-            map: new Map(),
-            file: new MapFile(ns, `${group}-servers.txt`)
-        };
+        const map = serverMaps[group];
+        if (!map.file) {
+            const {
+                fileInfo: {filename, location}
+            } = map;
+            map.file = new MapFile(ns, filename, location);
+        }
     }
 };
 
@@ -77,13 +90,16 @@ const mapServers = (ns: NS) => {
         omniscan(ns, {executor: addToMap});
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            file.write(JSON.stringify([...map]));
+            file && file.write(JSON.stringify(map, replacer));
         }
     } else {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            if (MapFile.exists(file.getFilePath())) {
-                hydrateServerMap({map, file});
+            if (file && MapFile.exists(file.getFilePath())) {
+                hydrateServerMap(ns, {
+                    skipStash: false,
+                    stash: {id: 'nmap', reviver}
+                });
             }
             if (group === 'all' && !map.size) {
                 tprint(

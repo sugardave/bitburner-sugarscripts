@@ -5,17 +5,18 @@ import {
     addBot,
     addBotnet,
     botnetActions,
-    botnetMap,
     getBotnetStatus,
     getServerPriceList,
+    hydrateBotnetMapFromStash,
     ramOptions,
+    refreshBotnetMap,
     removeBot,
     removeBotnet,
     startAttack,
     stopAttack
 } from 'utils/botnet/index';
 
-const botnets = new Map(botnetMap);
+const botnetMap = hydrateBotnetMapFromStash();
 
 const customSchema: CommandFlags = [
     ['action', ''],
@@ -23,7 +24,8 @@ const customSchema: CommandFlags = [
     ['botnet', []],
     ['controller', 'home'],
     ['quantity', 1],
-    ['ram', []]
+    ['ram', []],
+    ['threads', 1]
 ];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
 
@@ -31,9 +33,10 @@ const autocomplete = (
     {flags, servers}: AutocompleteData,
     args: ScriptArg[]
 ) => {
+    const botnets: string[] = Array.from(botnetMap.keys());
     const completionKeys = {
         action: [...botnetActions],
-        botnet: [...Array.from(botnets.keys())],
+        botnet: [...botnets],
         controller: [...servers],
         ram: [...ramOptions],
         target: [...servers]
@@ -44,9 +47,21 @@ const autocomplete = (
 
 const manageBotnets = (
     ns: NS,
-    {action, bot, botnet, quantity, ram, target}: BotnetManagerOptions
+    {
+        action,
+        bot,
+        botnet,
+        quantity,
+        ram,
+        target,
+        threads = 1
+    }: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
+
+    //refresh botnet map
+    refreshBotnetMap(ns);
+
     switch (action) {
         case 'addBot':
             addBot(ns, {bot, ram});
@@ -67,7 +82,7 @@ const manageBotnets = (
             removeBotnet(ns, {botnet});
             break;
         case 'startAttack':
-            startAttack(ns, {botnet, target});
+            startAttack(ns, {botnet, target, threads});
             break;
         case 'stopAttack':
             stopAttack(ns, {botnet});
@@ -87,7 +102,8 @@ const main = async (ns: NS) => {
         controller = 'home',
         quantity = 1,
         ram,
-        target
+        target,
+        threads = 1
     } = flags(argsSchema);
     return manageBotnets(ns, {
         action,
@@ -96,7 +112,8 @@ const main = async (ns: NS) => {
         controller,
         quantity,
         ram,
-        target
+        target,
+        threads
     });
 };
 

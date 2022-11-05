@@ -1,19 +1,25 @@
 import {NS} from '@ns';
-import {BotnetManagerOptions, BotnetMap, CommandFlags} from 'global';
+import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
 const argsSchema: CommandFlags = [...botnetFlagsSchemas.stopAttack];
 
 const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
     const {killall} = ns;
-    const botnetMap = hydrateBotnetMap(ns) as BotnetMap;
-    for (const botnet of botnets as string[]) {
-        if (botnetMap.size && botnetMap.has(botnet)) {
-            botnetMap.get(botnet)?.members?.map(({hostname}) => {
-                killall(hostname);
-            });
-        }
+    const botnetMap = hydrateBotnetMap(ns, {
+        mapType: 'all',
+        skipStash: false,
+        stash: {id: 'botnetMap', reviver}
+    });
+
+    for (const net of botnets as string[]) {
+        const botnet = botnetMap.get(net);
+        const members = botnet ? [...botnet.values()] : [];
+        members.map((hostname) => {
+            killall(hostname);
+        });
     }
 };
 

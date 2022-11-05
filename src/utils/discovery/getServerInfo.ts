@@ -18,7 +18,7 @@ const autocomplete = (
 };
 
 const loadServerCache = (ns: NS, cacheType = 'all') => {
-    const {location, suffix} = fileLocations.nmapCache;
+    const {location, suffix} = fileLocations.nmap;
     const fileName = `${cacheType}${suffix}`;
     const file = new MapFile(ns, fileName, location);
     const contents = file.read();
