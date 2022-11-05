@@ -10,8 +10,7 @@ import {
     SortFields
 } from 'global';
 import {getAutocompletions} from 'utils/index';
-import {hydrateServerMap} from 'utils/nmap/hydrateServerMap';
-import {fileLocations, MapFile} from 'utils/io/index';
+import {hydrateServerMap, nmapReviver as reviver} from 'utils/nmap/index';
 
 const sortFields: SortFields = {
     cores: 'cpuCores',
@@ -220,21 +219,14 @@ const listServers = (
         quiet: boolean;
         sortField: string[];
         sortOrder: string;
-    },
-    {
-        filename = 'all-servers.txt',
-        skipStash = false,
-        stashName = 'nmap'
-    }: {filename: string; skipStash: boolean; stashName: string}
+    }
 ) => {
     const {tprint} = ns;
-    const {location} = fileLocations.nmap;
-    const file = new MapFile(ns, filename, location);
     // first, get all the servers
-    let serverMap = hydrateServerMap(ns, file, {skipStash, stashName}) as Map<
-        string,
-        NetServerDetails
-    >;
+    let serverMap = hydrateServerMap(ns, {
+        skipStash: false,
+        stash: {id: 'nmap', reviver}
+    }) as Map<string, NetServerDetails>;
     // then, iterate sortFields array and call the sort function for each one
     let i = 0;
     do {
@@ -271,25 +263,21 @@ const main = async (ns: NS) => {
         sortField,
         sortOrder = 'descending'
     } = flags(argsSchema);
-    return listServers(
-        ns,
-        {
-            includeOwned,
-            includeOverLevel,
-            limit,
-            quiet,
-            sortField,
-            sortOrder
-        } as {
-            includeOwned: boolean;
-            includeOverLevel: boolean;
-            limit: number;
-            quiet: boolean;
-            sortField: string[];
-            sortOrder: string;
-        },
-        {filename: 'all-servers.txt', skipStash: false, stashName: 'nmap'}
-    );
+    return listServers(ns, {
+        includeOwned,
+        includeOverLevel,
+        limit,
+        quiet,
+        sortField,
+        sortOrder
+    } as {
+        includeOwned: boolean;
+        includeOverLevel: boolean;
+        limit: number;
+        quiet: boolean;
+        sortField: string[];
+        sortOrder: string;
+    });
 };
 
 export default main;
