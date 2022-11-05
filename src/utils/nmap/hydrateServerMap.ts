@@ -1,41 +1,36 @@
 import {NS} from '@ns';
-import {NetServerStashElement} from 'global';
-import {MapFile} from 'utils/io/MapFile';
-import {hydrateMap} from 'utils/hydrateMap';
+import {NetServerMap, NetServerStashElement} from 'global';
+import {hydrateMap, hydrateMapFromStash} from 'utils/hydrateMap';
 import {fileLocations} from 'utils/io/index';
+import {nmapReviver as reviver} from 'utils/nmap/nmapReviver';
+
+const hydrateServerMapFromStash = () => {
+    const nmap = hydrateMapFromStash({id: 'nmap', reviver});
+    return nmap ? nmap : new Map();
+};
 
 const hydrateServerMap = (
     ns: NS,
-    file: MapFile,
-    {skipStash = false, stashName: id}: {skipStash: boolean; stashName: string}
-) => {
-    const stash: NetServerStashElement = {id};
-    const botnetMap = hydrateMap(ns, file, {
-        skipStash,
-        stash
-    });
+    {
+        mapType = 'all',
+        skipStash = false,
+        stash = {id: 'nmap', reviver} as NetServerStashElement
+    }
+): NetServerMap => {
+    const {location, suffix} = fileLocations.nmap;
+    const nmap = hydrateMap(
+        ns,
+        {name: `${mapType}${suffix}`, location},
+        {skipStash, stash}
+    );
 
-    return botnetMap;
+    return nmap;
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-
-    const {
-        file,
-        location = fileLocations.nmap.location,
-        skipStash = false,
-        stashName = 'nmap'
-    } = flags([
-        ['file', ''],
-        ['location', '']
-    ]);
-    return hydrateServerMap(
-        ns,
-        new MapFile(ns, file as string, location as string),
-        {skipStash, stashName} as {skipStash: boolean; stashName: string}
-    );
+    const stash: NetServerStashElement = {id: 'nmap', reviver};
+    return hydrateServerMap(ns, {mapType: 'all', stash});
 };
 
 export default main;
-export {hydrateServerMap, main};
+export {hydrateServerMap, hydrateServerMapFromStash, main};

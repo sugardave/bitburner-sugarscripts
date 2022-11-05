@@ -5,12 +5,12 @@ type ServerChain = {
     chain: string[];
 };
 
-type ServerMapEntry = Map<NetServer['hostname'], Partial<Server>>;
-
 type NetServer = Partial<Server> & Partial<ServerChain>;
 type NetServerDetails = {
     [key: string]: ScriptArg;
 };
+type NetServerMap = Map<NetServer['hostname'], Partial<Server>>;
+
 type NetServerStashElement = StashElement & {
     replacer?: (k: string, v: unknown) => unknown;
     reviver?: (k: string, v: string) => unknown;
@@ -98,10 +98,10 @@ export {
     ExecutorOptions,
     NetServer,
     NetServerDetails,
+    NetServerMap,
     NetServerStashElement,
     OperatorFunction,
     Operators,
-    ServerMapEntry,
     SortField,
     SortFields,
     SortOption,

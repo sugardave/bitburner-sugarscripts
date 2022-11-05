@@ -6,7 +6,7 @@ import {
     NetServer,
     NetServerDetails,
     Operators,
-    ServerMapEntry,
+    NetServerMap,
     SortFields
 } from 'global';
 import {getAutocompletions} from 'utils/index';
@@ -173,7 +173,7 @@ const sortServers = (
     return result;
 };
 
-const outputList = (ns: NS, serverMap: ServerMapEntry) => {
+const outputList = (ns: NS, serverMap: NetServerMap) => {
     const {flags} = ns;
     const {sortField: sortFields} = flags(argsSchema);
     const fields = sortFields as string[];

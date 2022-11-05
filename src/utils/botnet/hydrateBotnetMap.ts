@@ -29,10 +29,7 @@ const hydrateBotnetMap = (
 
 const main = async (ns: NS) => {
     const stash: BotnetStashElement = {id: 'botnetMap', reviver};
-    return hydrateBotnetMap(ns, {mapType: 'all', stash} as {
-        mapType: string;
-        stash: BotnetStashElement;
-    });
+    return hydrateBotnetMap(ns, {mapType: 'all', stash});
 };
 
 export default main;

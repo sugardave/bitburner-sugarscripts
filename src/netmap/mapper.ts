@@ -1,22 +1,21 @@
 import {NS, ScriptArg} from '@ns';
-import {Executor, CommandFlags, NetServer} from 'global';
+import {Executor, CommandFlags, NetServer, NetServerMap} from 'global';
 import {omniscan} from 'discovery/omniscan';
 import {getAutocompletions} from 'utils/index';
 import {isPlayerOwned, isServerRooted} from 'utils/discovery/index';
 import {fileLocations, MapFile} from 'utils/io/index';
-import {hydrateServerMap} from 'utils/nmap/hydrateServerMap';
-
-type NetServerMap = {
-    file: MapFile | undefined;
-    fileInfo: {
-        filename: string;
-        location: string;
-    };
-    map: Map<string, NetServer>;
-};
+import {
+    hydrateServerMap,
+    nmapReplacer as replacer,
+    nmapReviver as reviver
+} from 'utils/nmap/index';
 
 type NetServerMaps = {
-    [mapType: string]: NetServerMap;
+    [mapType: string]: {
+        file: MapFile | undefined;
+        fileInfo: {filename: MapFile['name']; location: MapFile['location']};
+        map: NetServerMap;
+    };
 };
 
 const {location, suffix} = fileLocations.nmap;
@@ -91,15 +90,15 @@ const mapServers = (ns: NS) => {
         omniscan(ns, {executor: addToMap});
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            file && file.write(JSON.stringify([...map]));
+            file && file.write(JSON.stringify(map, replacer));
         }
     } else {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
             if (file && MapFile.exists(file.getFilePath())) {
-                hydrateServerMap(ns, file, {
+                hydrateServerMap(ns, {
                     skipStash: false,
-                    stashName: 'nmap'
+                    stash: {id: 'nmap', reviver}
                 });
             }
             if (group === 'all' && !map.size) {

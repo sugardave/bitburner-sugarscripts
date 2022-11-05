@@ -1,5 +1,5 @@
 import {NS} from '@ns';
-import {Botnet, BotnetMap, BotnetStashElement} from 'global';
+import {BotnetMap, BotnetStashElement} from 'global';
 import {fileLocations} from 'utils/io/index';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 import {botnetReplacer as replacer} from 'utils/botnet/botnetReplacer';
@@ -13,7 +13,7 @@ const cacheBotnetMap = (
         skipStash = false,
         stash = {id: 'botnetMap', replacer}
     }: {
-        botnetMap: Map<string, Botnet>;
+        botnetMap: BotnetMap;
         mapType?: string;
         skipStash?: boolean;
         stash?: BotnetStashElement;
