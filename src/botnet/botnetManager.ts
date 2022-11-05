@@ -5,9 +5,9 @@ import {
     addBot,
     addBotnet,
     botnetActions,
-    botnetMap,
     getBotnetStatus,
     getServerPriceList,
+    hydrateBotnetMapFromStash,
     ramOptions,
     refreshBotnetMap,
     removeBot,
@@ -16,7 +16,7 @@ import {
     stopAttack
 } from 'utils/botnet/index';
 
-const botnets = new Map(botnetMap);
+const botnetMap = hydrateBotnetMapFromStash();
 
 const customSchema: CommandFlags = [
     ['action', ''],
@@ -33,9 +33,10 @@ const autocomplete = (
     {flags, servers}: AutocompleteData,
     args: ScriptArg[]
 ) => {
+    const botnets: string[] = Array.from(botnetMap.keys());
     const completionKeys = {
         action: [...botnetActions],
-        botnet: [...Array.from(botnets.keys())],
+        botnet: [...botnets],
         controller: [...servers],
         ram: [...ramOptions],
         target: [...servers]
@@ -57,16 +58,16 @@ const manageBotnets = (
     }: BotnetManagerOptions
 ) => {
     const {tprint} = ns;
-    let refresh = false;
+
+    //refresh botnet map
+    refreshBotnetMap(ns);
 
     switch (action) {
         case 'addBot':
             addBot(ns, {bot, ram});
-            refresh = true;
             break;
         case 'addBotnet':
             addBotnet(ns, {botnet, quantity, ram});
-            refresh = true;
             break;
         case 'checkPricing':
             tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
@@ -76,11 +77,9 @@ const manageBotnets = (
             break;
         case 'removeBot':
             removeBot(ns, {bot});
-            refresh = true;
             break;
         case 'removeBotnet':
             removeBotnet(ns, {botnet});
-            refresh = true;
             break;
         case 'startAttack':
             startAttack(ns, {botnet, target, threads});
@@ -90,11 +89,6 @@ const manageBotnets = (
             break;
         default:
             break;
-    }
-
-    if (refresh) {
-        //refresh botnet map
-        refreshBotnetMap(ns);
     }
 };
 

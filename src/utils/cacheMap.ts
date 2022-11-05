@@ -1,29 +1,32 @@
 import {NS} from '@ns';
 import {MapFile} from 'utils/io/index';
+import {StashElement} from 'global';
 import {stashData} from 'utils/data/index';
 import {hydrateMap} from 'utils/hydrateMap';
 
 const cacheMap = (
     ns: NS,
     {
-        contents,
+        data,
         name,
         location
     }: {
-        contents: string;
+        data: unknown;
         name: string;
         location: string;
     },
-    {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
+    {skipStash = false, stash}: {skipStash: boolean; stash: StashElement}
 ) => {
+    const {replacer} = stash;
     const mapFile = new MapFile(ns, name, location);
+    const stringified = JSON.stringify(data, replacer);
 
-    mapFile.write(contents);
+    mapFile.write(stringified);
     if (!skipStash) {
-        stashData({data: contents, stashName});
+        stashData({data, stash});
     }
 
-    return contents;
+    return data;
 };
 
 const main = async (ns: NS) => {
@@ -32,30 +35,31 @@ const main = async (ns: NS) => {
         filename: name,
         location,
         skipStash,
-        stashName
+        stashName: id
     } = flags([
         ['filename', ''],
         ['location', ''],
         ['skipStash', false],
         ['stashName', '']
     ]);
-    const contents = hydrateMap(
+    const stash = {id};
+    const data = hydrateMap(
         ns,
         {name, location} as {name: string; location: string},
         {
             skipStash: true, // skip stash for this hydration
-            stashName
-        } as {skipStash: boolean; stashName: string}
+            stash
+        } as {skipStash: boolean; stash: StashElement}
     );
 
     return cacheMap(
         ns,
-        {contents, name, location} as {
-            contents: string;
+        {data, name, location} as {
+            data: unknown;
             name: string;
             location: string;
         },
-        {skipStash, stashName} as {skipStash: boolean; stashName: string}
+        {skipStash, stash} as {skipStash: boolean; stash: StashElement}
     );
 };
 

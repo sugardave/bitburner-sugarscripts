@@ -224,11 +224,11 @@ const listServers = (
     {
         filename = 'all-servers.txt',
         skipStash = false,
-        stashName = 'nmapCache'
+        stashName = 'nmap'
     }: {filename: string; skipStash: boolean; stashName: string}
 ) => {
     const {tprint} = ns;
-    const {location} = fileLocations.nmapCache;
+    const {location} = fileLocations.nmap;
     const file = new MapFile(ns, filename, location);
     // first, get all the servers
     let serverMap = hydrateServerMap(ns, file, {skipStash, stashName}) as Map<
@@ -288,7 +288,7 @@ const main = async (ns: NS) => {
             sortField: string[];
             sortOrder: string;
         },
-        {filename: 'all-servers.txt', skipStash: false, stashName: 'nmapCache'}
+        {filename: 'all-servers.txt', skipStash: false, stashName: 'nmap'}
     );
 };
 

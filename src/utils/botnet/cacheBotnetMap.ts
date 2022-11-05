@@ -1,7 +1,8 @@
 import {NS} from '@ns';
-import {Botnet, BotnetMap} from 'global';
+import {Botnet, BotnetMap, BotnetStashElement} from 'global';
 import {fileLocations} from 'utils/io/index';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
+import {botnetReplacer as replacer} from 'utils/botnet/botnetReplacer';
 import {cacheMap} from 'utils/cacheMap';
 
 const cacheBotnetMap = (
@@ -10,51 +11,37 @@ const cacheBotnetMap = (
         botnetMap,
         mapType = 'all',
         skipStash = false,
-        stashName = 'botnetMap'
+        stash = {id: 'botnetMap', replacer}
     }: {
         botnetMap: Map<string, Botnet>;
         mapType?: string;
         skipStash?: boolean;
-        stashName?: string;
+        stash?: BotnetStashElement;
     }
 ) => {
-    const {location, suffix} = fileLocations.botnetMapCache;
-    const contents = JSON.stringify(Array.from(botnetMap), (k, v) => {
-        if (v instanceof Set) {
-            return [...v];
-        }
-        return v;
-    });
+    const {location, suffix} = fileLocations.botnetMap;
 
     return cacheMap(
         ns,
-        {contents, name: `${mapType}${suffix}`, location},
-        {skipStash, stashName}
+        {data: Array.from(botnetMap), name: `${mapType}${suffix}`, location},
+        {skipStash, stash}
     );
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-    const {mapType, skipStash, stashName} = flags([
-        ['mapType', 'all'],
-        ['skipStash', false],
-        ['stashName', 'botnetMap']
-    ]);
+    const stash: BotnetStashElement = {
+        id: 'botnetMap',
+        replacer
+    };
     const botnetMap = hydrateBotnetMap(ns, {
-        mapType,
-        skipStash: true, // skip stash for this hydration
-        stashName
-    } as {
-        mapType: string;
-        skipStash: boolean;
-        stashName: string;
+        mapType: 'all',
+        stash
     });
 
-    return cacheBotnetMap(ns, {botnetMap, mapType, skipStash, stashName} as {
+    return cacheBotnetMap(ns, {botnetMap, mapType: 'all', stash} as {
         botnetMap: BotnetMap;
         mapType: string;
-        skipStash: boolean;
-        stashName: string;
+        stash: BotnetStashElement;
     });
 };
 

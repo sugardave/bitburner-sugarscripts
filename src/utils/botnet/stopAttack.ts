@@ -1,6 +1,7 @@
 import {NS} from '@ns';
 import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 
 const argsSchema: CommandFlags = [...botnetFlagsSchemas.stopAttack];
@@ -10,7 +11,7 @@ const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
     const botnetMap = hydrateBotnetMap(ns, {
         mapType: 'all',
         skipStash: false,
-        stashName: 'botnetMap'
+        stash: {id: 'botnetMap', reviver}
     });
 
     for (const net of botnets as string[]) {

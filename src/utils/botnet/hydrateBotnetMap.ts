@@ -1,37 +1,39 @@
 import {NS} from '@ns';
+import {BotnetMap, BotnetStashElement} from 'global';
 import {fileLocations} from 'utils/io/index';
-import {hydrateMap} from 'utils/hydrateMap';
-import {BotnetMap} from '/global';
+import {hydrateMap, hydrateMapFromStash} from 'utils/hydrateMap';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
+
+const hydrateBotnetMapFromStash = () => {
+    const botnetMap = hydrateMapFromStash({id: 'botnetMap', reviver});
+    return botnetMap ? botnetMap : new Map();
+};
 
 const hydrateBotnetMap = (
     ns: NS,
-    {mapType = 'all', skipStash = false, stashName = 'botnetMap'}
+    {
+        mapType = 'all',
+        skipStash = false,
+        stash = {id: 'botnetMap', reviver} as BotnetStashElement
+    }
 ): BotnetMap => {
-    const {location, suffix} = fileLocations.botnetMapCache;
-    const contents = hydrateMap(
+    const {location, suffix} = fileLocations.botnetMap;
+    const botnetMap = hydrateMap(
         ns,
         {name: `${mapType}${suffix}`, location},
-        {skipStash, stashName}
+        {skipStash, stash}
     );
-    const parsed = JSON.parse(contents, (k, v) => (k === '' ? new Set(v) : v));
-    const botnetMap: BotnetMap = new Map([...parsed]);
 
     return botnetMap;
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-    const {mapType, skipStash, stashName} = flags([
-        ['mapType', 'all'],
-        ['skipStash', false],
-        ['stashName', 'botnetMap']
-    ]);
-    return hydrateBotnetMap(ns, {mapType, skipStash, stashName} as {
+    const stash: BotnetStashElement = {id: 'botnetMap', reviver};
+    return hydrateBotnetMap(ns, {mapType: 'all', stash} as {
         mapType: string;
-        skipStash: boolean;
-        stashName: string;
+        stash: BotnetStashElement;
     });
 };
 
 export default main;
-export {hydrateBotnetMap, main};
+export {hydrateBotnetMap, hydrateBotnetMapFromStash, main};

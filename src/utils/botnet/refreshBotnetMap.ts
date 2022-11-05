@@ -23,11 +23,10 @@ const refreshBotnetMap = (ns: NS) => {
     }
     // write to botnet map cache
     cacheBotnetMap(ns, {
-        botnetMap,
-        mapType: 'all',
-        skipStash: false,
-        stashName: 'botnetMap'
+        botnetMap
     });
+
+    return botnetMap;
 };
 
 const main = async (ns: NS) => {

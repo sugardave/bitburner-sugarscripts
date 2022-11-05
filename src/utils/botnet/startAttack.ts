@@ -2,8 +2,9 @@ import {NS} from '@ns';
 import {BotnetMap, CommandFlags, ExecutorOptions, NetServer} from 'global';
 import {deployScripts} from 'utils/botnet/deployScripts';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
-import {commonSchema} from 'utils/index';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
+import {commonSchema} from 'utils/index';
 
 const customSchema = [...botnetFlagsSchemas.startAttack];
 const argsSchema: CommandFlags = [...commonSchema, ...customSchema];
@@ -17,7 +18,7 @@ const startAttack = (
     const botnetMap = hydrateBotnetMap(ns, {
         mapType: 'all',
         skipStash: false,
-        stashName: 'botnetMap'
+        stash: {id: 'botnetMap', reviver}
     }) as BotnetMap;
     (botnets as string[]).map((net) => {
         const botnet = botnetMap.get(net);

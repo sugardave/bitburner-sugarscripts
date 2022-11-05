@@ -1,6 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {generateBotnetName} from 'utils/botnet/generateBotnetName';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
@@ -29,7 +30,10 @@ const addBot = (
     {bot, quantity = 1, ram: rams = ramOptions}: BotnetManagerOptions
 ) => {
     const {purchaseServer} = ns;
-    const botnetMap = hydrateBotnetMap(ns, {});
+    let botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
+    if (!botnetMap || !botnetMap.size || !(botnetMap instanceof Map)) {
+        botnetMap = new Map();
+    }
     const botnetName = generateBotnetName(bot as string);
     const ram = Array.isArray(rams) ? (rams as ScriptArg[]).pop() : rams;
     const added: string[] = [];

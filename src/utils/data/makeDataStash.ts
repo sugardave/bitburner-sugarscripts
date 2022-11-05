@@ -1,11 +1,15 @@
 import {getDataStash} from 'utils/data/getDataStash';
+import {StashElement} from 'global';
 
-const makeDataStash = (doc = document, id = 'data-stash'): HTMLElement => {
-    const el = getDataStash(doc, id);
-    const stash = {cache: {botnetMap: [], nmapCache: []}};
+const makeDataStash = ({
+    doc = document,
+    id = 'data-stash',
+    tag = 'div'
+}: StashElement = {}): HTMLElement => {
+    const el = getDataStash({doc, id, tag});
     if (!el.dataset.stash) {
         // tabula rasa
-        el.setAttribute(id, JSON.stringify(stash));
+        el.setAttribute('data-stash', JSON.stringify([]));
     }
 
     return el;

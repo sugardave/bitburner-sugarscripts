@@ -1,20 +1,32 @@
 import {NS} from '@ns';
+import {StashElement} from 'global';
 import {MapFile} from 'utils/io/index';
-import {stashData} from 'utils/data/index';
+import {getDataStash} from 'utils/data/index';
+
+const hydrateMapFromStash = (stash: StashElement) => {
+    const {reviver} = stash;
+    const {stash: data} = getDataStash(stash).dataset;
+    if (!data) {
+        return;
+    }
+    const hydrated = JSON.parse(data, reviver);
+    return hydrated;
+};
 
 const hydrateMap = (
     ns: NS,
     {name, location}: {name: string; location: string},
-    {skipStash = false, stashName}: {skipStash: boolean; stashName: string}
+    {skipStash = false, stash}: {skipStash: boolean; stash: StashElement}
 ) => {
+    const {reviver} = stash;
+    if (!skipStash) {
+        hydrateMapFromStash(stash);
+    }
+
     const mapFile = new MapFile(ns, name, location);
     const contents = mapFile.read() || '[]';
 
-    if (!skipStash) {
-        stashData({data: contents, stashName});
-    }
-
-    return contents;
+    return JSON.parse(contents, reviver);
 };
 
 const main = async (ns: NS) => {
@@ -23,7 +35,7 @@ const main = async (ns: NS) => {
         filename: name,
         location,
         skipStash,
-        stashName
+        stashName: id
     } = flags([
         ['filename', ''],
         ['location', ''],
@@ -31,12 +43,14 @@ const main = async (ns: NS) => {
         ['stashName', '']
     ]);
 
+    const stash = {id};
+
     return hydrateMap(
         ns,
         {name, location} as {name: string; location: string},
-        {skipStash, stashName} as {skipStash: boolean; stashName: string}
+        {skipStash, stash} as {skipStash: boolean; stash: StashElement}
     );
 };
 
 export default main;
-export {hydrateMap, main};
+export {hydrateMap, hydrateMapFromStash, main};

@@ -19,7 +19,7 @@ type NetServerMaps = {
     [mapType: string]: NetServerMap;
 };
 
-const {location, suffix} = fileLocations.nmapCache;
+const {location, suffix} = fileLocations.nmap;
 
 const serverMaps: NetServerMaps = {
     all: {
@@ -99,7 +99,7 @@ const mapServers = (ns: NS) => {
             if (file && MapFile.exists(file.getFilePath())) {
                 hydrateServerMap(ns, file, {
                     skipStash: false,
-                    stashName: 'nmapCache'
+                    stashName: 'nmap'
                 });
             }
             if (group === 'all' && !map.size) {

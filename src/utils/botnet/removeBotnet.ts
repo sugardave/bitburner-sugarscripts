@@ -1,6 +1,7 @@
 import {AutocompleteData, NS, ScriptArg} from '@ns';
 import {Botnet, BotnetManagerOptions, CommandFlags} from 'global';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 import {removeBot} from 'utils/botnet/removeBot';
@@ -22,7 +23,7 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 };
 
 const removeBotnet = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
-    const botnetMap = hydrateBotnetMap(ns, {});
+    const botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
     for (const botnetName of botnets as string[]) {
         if (botnetMap.has(botnetName)) {
             let botnet = botnetMap.get(botnetName) as Botnet;

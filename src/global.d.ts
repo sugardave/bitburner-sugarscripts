@@ -11,6 +11,10 @@ type NetServer = Partial<Server> & Partial<ServerChain>;
 type NetServerDetails = {
     [key: string]: ScriptArg;
 };
+type NetServerStashElement = StashElement & {
+    replacer?: (k: string, v: unknown) => unknown;
+    reviver?: (k: string, v: string) => unknown;
+};
 
 type ExecutorOptions = Record<string, unknown>;
 
@@ -19,6 +23,16 @@ type Executor = (
     server: NetServer,
     options: ExecutorOptions
 ) => NetServer | ScriptArg | boolean | unknown | void;
+
+// data in the DOM
+type StashElementProperties = {
+    doc: Document;
+    id: string;
+    tag: string;
+    replacer: (k: string, v: unknown) => unknown;
+    reviver: (k: string, v: string) => unknown;
+};
+type StashElement = Partial<HTMLElement> & Partial<StashElementProperties>;
 
 // command flag handling for autocompletion and other scripts
 type AutocompletionArgs = ScriptArg[];
@@ -38,9 +52,13 @@ type CommandFlag = [string, ScriptArg | []];
 type CommandFlags = CommandFlag[];
 
 // botnet
-type BotServer = {memberOf: string} & Partial<NetServer>;
+type BotServer = {hostname: string};
 type Botnet = Set<BotServer['hostname']>;
 type BotnetMap = Map<string, Botnet>;
+type BotnetStashElement = Partial<StashElement> & {
+    replacer?: (k: string, v: unknown) => unknown;
+    reviver?: (k: string, v: string) => unknown;
+};
 
 type BotnetManagerOptions = {
     [name: string]: ScriptArg | ScriptArg[];
@@ -72,6 +90,7 @@ export {
     Botnet,
     BotnetManagerOptions,
     BotnetMap,
+    BotnetStashElement,
     BotServer,
     CommandFlag,
     CommandFlags,
@@ -79,10 +98,13 @@ export {
     ExecutorOptions,
     NetServer,
     NetServerDetails,
+    NetServerStashElement,
     OperatorFunction,
     Operators,
     ServerMapEntry,
     SortField,
     SortFields,
-    SortOption
+    SortOption,
+    StashElement,
+    StashElementProperties
 };

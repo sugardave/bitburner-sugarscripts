@@ -3,6 +3,7 @@ import {BotnetManagerOptions, CommandFlags} from 'global';
 import {getAutocompletions} from 'utils/index';
 import {addBot} from 'utils/botnet/addBot';
 import {botnetFlagsSchemas} from 'utils/botnet/botnetFlagsSchemas';
+import {botnetReviver as reviver} from 'utils/botnet/botnetReviver';
 import {cacheBotnetMap} from 'utils/botnet/cacheBotnetMap';
 import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 import {ramOptions} from 'utils/botnet/ramOptions';
@@ -26,7 +27,10 @@ const addBotnet = (
     ns: NS,
     {botnet: botnetName, quantity = 1, ram: rams}: BotnetManagerOptions
 ) => {
-    const botnetMap = hydrateBotnetMap(ns, {});
+    let botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
+    if (!botnetMap || !botnetMap.size || !(botnetMap instanceof Map)) {
+        botnetMap = new Map();
+    }
     const nets: string[] = Array.isArray(botnetName)
         ? (botnetName as string[])
         : ([botnetName] as string[]);

@@ -1,17 +1,19 @@
-const getDataStash = (
+import {StashElement} from 'global';
+
+const getDataStash = ({
     doc = document,
     id = 'data-stash',
     tag = 'div'
-): HTMLElement => {
+}: StashElement = {}): HTMLElement => {
     let el = doc.getElementById(id);
-    if (!el?.parentNode) {
+    if (!el || !el.parentNode) {
         el = doc.createElement(tag);
         el.id = id;
         el.hidden = true;
 
-        doc.body.appendChild(el as Node);
+        doc.body.appendChild(el);
     }
-    return el as HTMLElement;
+    return el;
 };
 
 export default getDataStash;
