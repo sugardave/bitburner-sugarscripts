@@ -61,7 +61,7 @@ type BotnetStashElement = Partial<StashElement> & {
 };
 
 type BotnetManagerOptions = {
-    [name: string]: ScriptArg | ScriptArg[];
+    [option: string]: ScriptArg | ScriptArg[];
 };
 
 // discovery
@@ -82,6 +82,20 @@ type SortOption = {
     [sortOption: string]: string;
 };
 
+// hacknet
+type HacknetManagerOptions = {
+    context?: 'node' | 'server';
+};
+
+type HacknetNodeManagerOptions = HacknetManagerOptions & {
+    action: string;
+    component: string;
+    node: number;
+    quantity: number;
+};
+
+type HacknetServerManagerOptions = Partial<HacknetNodeManagerOptions>;
+
 export {
     Autocompleter,
     AutocompletionArgs,
@@ -96,6 +110,9 @@ export {
     CommandFlags,
     Executor,
     ExecutorOptions,
+    HacknetManagerOptions,
+    HacknetNodeManagerOptions,
+    HacknetServerManagerOptions,
     NetServer,
     NetServerDetails,
     NetServerMap,
