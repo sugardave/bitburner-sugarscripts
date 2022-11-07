@@ -81,9 +81,8 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
     }
 };
 
-const mapServers = (ns: NS) => {
-    const {flags, tprint} = ns;
-    const {rescan} = flags(argsSchema);
+const mapServers = (ns: NS, {rescan = false}: {rescan?: boolean}) => {
+    const {tprint} = ns;
     const serverGroups = ['all', 'owned', 'pwned'];
     initializeMapGroups(ns);
     if (rescan) {
@@ -111,7 +110,7 @@ const mapServers = (ns: NS) => {
     }
 };
 
-const main = async (ns: NS) => mapServers(ns);
+const main = async (ns: NS) => mapServers(ns, ns.flags(argsSchema));
 
 export default main;
 export {autocomplete, main};
