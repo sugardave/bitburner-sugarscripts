@@ -15,9 +15,8 @@ const sortBot = (bot: string) => {
 };
 
 const refreshBotnetMap = (ns: NS) => {
-    const {getPurchasedServers} = ns;
     // find all owned servers except home
-    const bots = getPurchasedServers();
+    const bots = ns.getPurchasedServers();
     for (const bot of bots) {
         sortBot(bot);
     }

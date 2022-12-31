@@ -14,23 +14,22 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
     return getAutocompletions({args, completionKeys});
 };
 
-const formatter = ({nFormat}: NS, value: number): string =>
-    nFormat(value, '$0.00a');
+const formatter = (ns: NS, value: number): string =>
+    ns.nFormat(value, '$0.00a');
 
 const getServerPriceList = (ns: NS, ram: ScriptArg[]) => {
-    const {getPurchasedServerCost} = ns;
     const prices = [];
     const result: {formatted: string; prices: ScriptArg[][]} = {
         formatted: ``,
         prices: []
     };
     if (!Array.isArray(ram)) {
-        prices.push([ram, getPurchasedServerCost(ram)]);
+        prices.push([ram, ns.getPurchasedServerCost(ram)]);
     } else {
         for (const option of ram && ram.length ? ram : ramOptions) {
             prices.push([
                 option as number,
-                getPurchasedServerCost(option as number)
+                ns.getPurchasedServerCost(option as number)
             ]);
         }
     }
@@ -46,11 +45,10 @@ const getServerPriceList = (ns: NS, ram: ScriptArg[]) => {
 };
 
 const main = async (ns: NS) => {
-    const {flags, tprint} = ns;
-    const {ram} = flags(argsSchema);
+    const {ram} = ns.flags(argsSchema);
     const output = getServerPriceList(ns, ram as ScriptArg[]);
 
-    tprint(output.formatted);
+    ns.tprint(output.formatted);
     return output;
 };
 

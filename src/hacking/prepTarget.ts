@@ -28,12 +28,7 @@ const prepTarget: Executor = (
     {hostname}: NetServer,
     {files, origin}: ExecutorOptions
 ) => {
-    const {getServer} = ns;
-    const {hasAdminRights} = getServerInfo(
-        {getServer} as NS,
-        {hostname},
-        {}
-    ) as NetServer;
+    const {hasAdminRights} = getServerInfo(ns, {hostname}, {}) as NetServer;
     if (hasAdminRights) {
         return deployFiles(ns, {hostname} as NetServer, {files, origin});
     }
@@ -41,12 +36,11 @@ const prepTarget: Executor = (
 };
 
 const main = async (ns: NS) => {
-    const {flags, getHostname} = ns;
     const {
         file: files,
         origin = 'home',
-        target: hostname = getHostname()
-    } = flags(argsSchema);
+        target: hostname = ns.getHostname()
+    } = ns.flags(argsSchema);
 
     return deployFiles(ns, {hostname} as NetServer, {files, origin});
 };

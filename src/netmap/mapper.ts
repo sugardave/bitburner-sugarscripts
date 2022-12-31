@@ -47,10 +47,9 @@ const autocomplete = ({flags}: NS, args: ScriptArg[]) => {
 };
 
 const addToMap: Executor = (ns: NS, server: NetServer) => {
-    const {getHostname, getServer} = ns;
-    const {hostname = getHostname(), ...rest} = server;
+    const {hostname = ns.getHostname(), ...rest} = server;
     const {all, owned, pwned} = serverMaps;
-    const serverInfo = Object.assign(getServer(hostname), {
+    const serverInfo = Object.assign(ns.getServer(hostname), {
         ...rest,
         _cached: Date.now()
     });
@@ -82,8 +81,7 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
 };
 
 const mapServers = (ns: NS) => {
-    const {flags, tprint} = ns;
-    const {rescan} = flags(argsSchema);
+    const {rescan} = ns.flags(argsSchema);
     const serverGroups = ['all', 'owned', 'pwned'];
     initializeMapGroups(ns);
     if (rescan) {
@@ -95,14 +93,14 @@ const mapServers = (ns: NS) => {
     } else {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            if (file && MapFile.exists(file.getFilePath())) {
+            if (file && file.exists(file.getFilePath())) {
                 hydrateServerMap(ns, {
                     skipStash: false,
                     stash: {id: 'nmap', reviver}
                 });
             }
             if (group === 'all' && !map.size) {
-                tprint(
+                ns.tprint(
                     `hydration failed, run mapper again with --rescan option`
                 );
                 break;

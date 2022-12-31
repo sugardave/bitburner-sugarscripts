@@ -5,8 +5,10 @@ import {fileLocations} from 'utils/io/fileLocations';
 class MapFile extends GameFile {
     constructor(ns: NS, name: string, location = fileLocations.nmap.location) {
         super(name, location);
-        // set static member for class GameFile to this ns instance
-        GameFile.ns = ns;
+        if (!GameFile.ns) {
+            // set static member for class GameFile to this ns instance
+            GameFile.ns = ns;
+        }
     }
 }
 
