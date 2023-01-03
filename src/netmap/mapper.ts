@@ -80,8 +80,8 @@ const initializeMapGroups = (ns: NS, groups = ['all', 'owned', 'pwned']) => {
     }
 };
 
-const mapServers = (ns: NS) => {
-    const {rescan} = ns.flags(argsSchema);
+const mapServers = (ns: NS, flags: Record<string, unknown>) => {
+    const {rescan} = flags;
     const serverGroups = ['all', 'owned', 'pwned'];
     initializeMapGroups(ns);
     if (rescan) {
@@ -93,7 +93,7 @@ const mapServers = (ns: NS) => {
     } else {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            if (file && MapFile.exists(file.getFilePath())) {
+            if (file && file.exists(file.getFilePath())) {
                 hydrateServerMap(ns, {
                     skipStash: false,
                     stash: {id: 'nmap', reviver}
