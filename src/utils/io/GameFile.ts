@@ -11,10 +11,8 @@ class GameFile {
         this.name = name;
     }
 
-    static exists(file: string) {
-        const {fileExists} = GameFile.ns;
-
-        return fileExists(file);
+    exists(file: string) {
+        return GameFile.ns.fileExists(file);
     }
 
     getFilePath() {
@@ -22,16 +20,15 @@ class GameFile {
     }
 
     read() {
-        const {read} = GameFile.ns;
-        const thisFile = this.getFilePath();
-
-        return read(thisFile) as string;
+        return GameFile.ns.read(this.getFilePath());
     }
 
     write(contents: string, append = false) {
-        const {write} = GameFile.ns;
-        const thisFile = this.getFilePath();
-        return write(thisFile, contents, append ? 'a' : 'w');
+        return GameFile.ns.write(
+            this.getFilePath(),
+            contents,
+            append ? 'a' : 'w'
+        );
     }
 }
 

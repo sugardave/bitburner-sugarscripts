@@ -57,8 +57,6 @@ const manageBotnets = (
         threads = 1
     }: BotnetManagerOptions
 ) => {
-    const {tprint} = ns;
-
     //refresh botnet map
     refreshBotnetMap(ns);
 
@@ -70,10 +68,10 @@ const manageBotnets = (
             addBotnet(ns, {botnet, quantity, ram});
             break;
         case 'checkPricing':
-            tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
+            ns.tprint(getServerPriceList(ns, ram as ScriptArg[]).formatted);
             break;
         case 'getBotnetStatus':
-            tprint(getBotnetStatus(ns));
+            ns.tprint(getBotnetStatus(ns));
             break;
         case 'removeBot':
             removeBot(ns, {bot});
@@ -93,8 +91,6 @@ const manageBotnets = (
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-
     const {
         action,
         bot,
@@ -104,7 +100,7 @@ const main = async (ns: NS) => {
         ram,
         target,
         threads = 1
-    } = flags(argsSchema);
+    } = ns.flags(argsSchema);
     return manageBotnets(ns, {
         action,
         bot,

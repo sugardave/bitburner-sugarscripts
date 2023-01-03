@@ -14,9 +14,8 @@ const getBotnetStatus = (ns: NS): string => {
 };
 
 const main = async (ns: NS) => {
-    const {tprint} = ns;
     const output = getBotnetStatus(ns);
-    tprint(output);
+    ns.tprint(output);
     return output;
 };
 

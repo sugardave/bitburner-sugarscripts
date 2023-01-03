@@ -29,7 +29,6 @@ const addBot = (
     ns: NS,
     {bot, quantity = 1, ram: rams = ramOptions}: BotnetManagerOptions
 ) => {
-    const {purchaseServer} = ns;
     let botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
     if (!botnetMap || !botnetMap.size || !(botnetMap instanceof Map)) {
         botnetMap = new Map();
@@ -39,7 +38,7 @@ const addBot = (
     const added: string[] = [];
 
     for (let i = 0; i < quantity; i += 1) {
-        const hostname = purchaseServer(botnetName, ram as number);
+        const hostname = ns.purchaseServer(botnetName, ram as number);
         const purchased = !!hostname;
         if (purchased) {
             const member = hostname;
@@ -60,8 +59,7 @@ const addBot = (
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-    const {bot, quantity = 1, ram} = flags(argsSchema);
+    const {bot, quantity = 1, ram} = ns.flags(argsSchema);
 
     return addBot(ns, {bot, quantity, ram});
 };

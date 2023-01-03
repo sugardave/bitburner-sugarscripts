@@ -15,12 +15,11 @@ const autocomplete = (
     return getAutocompletions({args, completionKeys});
 };
 
-const isPlayerOwned: Executor = ({getServer}: NS, {hostname}) =>
-    getServer(hostname).purchasedByPlayer;
+const isPlayerOwned: Executor = (ns: NS, {hostname}) =>
+    ns.getServer(hostname).purchasedByPlayer;
 
 const main = async (ns: NS) => {
-    const {flags, getHostname} = ns;
-    const {target: hostname = getHostname()} = flags(argsSchema);
+    const {target: hostname = ns.getHostname()} = ns.flags(argsSchema);
     return isPlayerOwned(ns, {hostname} as NetServer, {});
 };
 
