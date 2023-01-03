@@ -11,10 +11,11 @@ class GameFile {
         this.name = name;
     }
 
-    static exists(file: string) {
+    exists() {
         const {fileExists} = GameFile.ns;
+        const thisFile = this.getFilePath();
 
-        return fileExists(file);
+        return fileExists(thisFile);
     }
 
     getFilePath() {

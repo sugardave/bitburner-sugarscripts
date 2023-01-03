@@ -95,7 +95,7 @@ const mapServers = (ns: NS) => {
     } else {
         for (const group of serverGroups) {
             const {file, map} = serverMaps[group];
-            if (file && MapFile.exists(file.getFilePath())) {
+            if (file && file.exists()) {
                 hydrateServerMap(ns, {
                     skipStash: false,
                     stash: {id: 'nmap', reviver}
