@@ -14,7 +14,6 @@ const startAttack = (
     ns: NS,
     {botnet: botnets, target, threads = 1}: ExecutorOptions
 ) => {
-    const {exec, tprint} = ns;
     const botnetMap = hydrateBotnetMap(ns, {
         mapType: 'all',
         skipStash: false,
@@ -25,10 +24,10 @@ const startAttack = (
         botnet &&
             [...botnet.values()].map((hostname) => {
                 if (!deployScripts(ns, {hostname} as NetServer, {})) {
-                    tprint(`failed to deploy attack scripts to ${hostname}`);
+                    ns.tprint(`failed to deploy attack scripts to ${hostname}`);
                 } else {
                     // attack!
-                    exec(
+                    ns.exec(
                         `hacking/wgh.js`,
                         hostname as string,
                         threads as number,
@@ -41,9 +40,7 @@ const startAttack = (
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-
-    const {botnet, target, threads = 1} = flags(argsSchema);
+    const {botnet, target, threads = 1} = ns.flags(argsSchema);
     return startAttack(ns, {botnet, target, threads});
 };
 

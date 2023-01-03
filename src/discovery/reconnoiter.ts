@@ -23,17 +23,6 @@ const reconnoiter: Executor = (
     {hostname}: NetServer,
     {quiet, skipCache}
 ) => {
-    const {
-        getGrowTime,
-        getHackTime,
-        getServerMoneyAvailable,
-        getServerSecurityLevel,
-        getWeakenTime,
-        hackAnalyzeChance,
-        nFormat,
-        sprintf,
-        tprint
-    } = ns;
     const server = getServerInfo(ns, {hostname} as NetServer, {
         skipCache
     }) as NetServer;
@@ -45,37 +34,38 @@ const reconnoiter: Executor = (
         serverGrowth: growthAmount
     } = server;
     const target = hostname as string;
-    const hackChance = nFormat(
-        Math.round(hackAnalyzeChance(target)),
+    const hackChance = ns.nFormat(
+        Math.round(ns.hackAnalyzeChance(target)),
         '(0.000%)'
     );
-    const loot = nFormat(getServerMoneyAvailable(target), '($0.00 a)');
-    const secLevel = getServerSecurityLevel(target);
+    const loot = ns.nFormat(ns.getServerMoneyAvailable(target), '($0.00 a)');
+    const secLevel = ns.getServerSecurityLevel(target);
     const formatTime = (ms: number) =>
-        sprintf('%08s', nFormat(ms / 1000, '00:00:00'));
-    const growTime = formatTime(getGrowTime(target));
-    const hackTime = formatTime(getHackTime(target));
-    const weakenTime = formatTime(getWeakenTime(target));
+        ns.sprintf('%08s', ns.nFormat(ms / 1000, '00:00:00'));
+    const growTime = formatTime(ns.getGrowTime(target));
+    const hackTime = formatTime(ns.getHackTime(target));
+    const weakenTime = formatTime(ns.getWeakenTime(target));
 
     if (!quiet) {
-        tprint(`\n\t\t\t\tavailable money: ${loot}\tmaximum funds: ${maxLoot}`);
-        tprint(
+        ns.tprint(
+            `\n\t\t\t\tavailable money: ${loot}\tmaximum funds: ${maxLoot}`
+        );
+        ns.tprint(
             `\n\t\t\t\tsecurity level: ${secLevel}\tminimum level: ${minSecLevel}`
         );
-        tprint(`\n\t\t\t\ttimings:\t\tweaken\t\t\tgrow\t\t\thack`);
-        tprint(`\t\t\t\t${weakenTime}\t\t${growTime}\t\t${hackTime}`);
-        tprint(`\n\t\t\t\tRAM: ${ram}`);
-        tprint(
+        ns.tprint(`\n\t\t\t\ttimings:\t\tweaken\t\t\tgrow\t\t\thack`);
+        ns.tprint(`\t\t\t\t${weakenTime}\t\t${growTime}\t\t${hackTime}`);
+        ns.tprint(`\n\t\t\t\tRAM: ${ram}`);
+        ns.tprint(
             `\n\t\t\t\thacking level: ${hackingLevel}\thack chance: ${hackChance}`
         );
-        tprint(`\n\t\t\t\tserver growth parameter: ${growthAmount}`);
+        ns.tprint(`\n\t\t\t\tserver growth parameter: ${growthAmount}`);
     }
     return server;
 };
 
 const main = async (ns: NS) => {
-    const {flags, getHostname} = ns;
-    const {quiet, target: hostname = getHostname()} = flags(argsSchema);
+    const {quiet, target: hostname = ns.getHostname()} = ns.flags(argsSchema);
     return reconnoiter(ns, {hostname} as NetServer, {quiet, skipCache: true});
 };
 

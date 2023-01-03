@@ -58,8 +58,7 @@ const addBotnet = (
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-    const {botnet, quantity = 1, ram} = flags(argsSchema);
+    const {botnet, quantity = 1, ram} = ns.flags(argsSchema);
     return addBotnet(ns, {botnet, quantity, ram});
 };
 

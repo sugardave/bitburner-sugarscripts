@@ -12,11 +12,10 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 };
 
 const shareComputer = async (ns: NS) => {
-    const {flags, share} = ns;
-    const {once} = flags(argsSchema);
+    const {once} = ns.flags(argsSchema);
 
     while (!once) {
-        await share();
+        await ns.share();
     }
 };
 

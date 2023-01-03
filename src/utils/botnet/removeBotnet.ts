@@ -48,8 +48,7 @@ const removeBotnet = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
 };
 
 const main = async (ns: NS) => {
-    const {flags} = ns;
-    const {botnet} = flags(argsSchema);
+    const {botnet} = ns.flags(argsSchema);
     return removeBotnet(ns, {botnet});
 };
 
