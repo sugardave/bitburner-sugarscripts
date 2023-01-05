@@ -24,10 +24,11 @@ const prepForPwnage: Executor = (ns: NS, server: NetServer) => {
 };
 
 const pwnServer: Executor = (ns: NS, server: NetServer) => {
-    const {hostname: target, numOpenPortsRequired} = ns.getServer(
+    const {getServer, nuke, tprint} = ns;
+    const {hostname: target, numOpenPortsRequired} = getServer(
         server.hostname as string
     );
-    ns.tprint(
+    tprint(
         `pwnServer ${server.hostname}; needs ${numOpenPortsRequired} ports open`
     );
     if ((numOpenPortsRequired as number) > 0) {
@@ -35,12 +36,13 @@ const pwnServer: Executor = (ns: NS, server: NetServer) => {
             return;
         }
     }
-    ns.nuke(target as string);
-    ns.tprint(`${target} PWNed!`);
+    nuke(target as string);
+    tprint(`${target} PWNed!`);
 };
 
 const pwn = (ns: NS) => {
-    const {target} = ns.flags([...argsSchema, ['target', ns.getHostname()]]);
+    const {flags, getHostname} = ns;
+    const {target} = flags([...argsSchema, ['target', getHostname()]]);
     const hostname = target as string;
 
     return pwnServer(ns, {hostname}, {});

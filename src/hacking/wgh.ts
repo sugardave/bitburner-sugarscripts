@@ -25,33 +25,43 @@ const autocomplete = (
 };
 
 const growServer: Executor = async (ns: NS, {hostname: target}: NetServer) => {
-    await ns.grow(target as string);
+    const {grow} = ns;
+    await grow(target as string);
 };
 
 const hackServer: Executor = async (ns: NS, {hostname: target}: NetServer) => {
-    await ns.hack(target as string);
+    const {hack} = ns;
+    await hack(target as string);
 };
 
 const weakenServer: Executor = async (
     ns: NS,
     {hostname: target}: NetServer
 ) => {
-    await ns.weaken(target as string);
+    const {weaken} = ns;
+    await weaken(target as string);
 };
 
 const wgh: Executor = async (ns: NS, {hostname}: NetServer, {once}) => {
+    const {
+        getServerMaxMoney,
+        getServerMoneyAvailable,
+        getServerMinSecurityLevel,
+        getServerSecurityLevel,
+        sleep
+    } = ns;
     const secLevelModifier = 5;
     const fundsModifier = 0.75;
     const server = new Server(hostname as string);
     const target = hostname as string;
 
     const maximumSecurityLevel =
-        ns.getServerMinSecurityLevel(target) + secLevelModifier;
-    const minimumFundsAvailable = ns.getServerMaxMoney(target) * fundsModifier;
+        getServerMinSecurityLevel(target) + secLevelModifier;
+    const minimumFundsAvailable = getServerMaxMoney(target) * fundsModifier;
 
     while (!once) {
-        const currentSecurityLevel = ns.getServerSecurityLevel(target);
-        const currentFunds = ns.getServerMoneyAvailable(target);
+        const currentSecurityLevel = getServerSecurityLevel(target);
+        const currentFunds = getServerMoneyAvailable(target);
         if (currentSecurityLevel > maximumSecurityLevel) {
             await weakenServer(ns, server, {});
         } else if (currentFunds < minimumFundsAvailable) {
@@ -59,14 +69,15 @@ const wgh: Executor = async (ns: NS, {hostname}: NetServer, {once}) => {
         } else {
             await hackServer(ns, server, {});
         }
-        await ns.sleep(50);
+        await sleep(50);
     }
 };
 
 const main = async (ns: NS) => {
-    const {once, target: hostname} = ns.flags([
+    const {flags, getHostname} = ns;
+    const {once, target: hostname} = flags([
         ...argsSchema,
-        ['target', ns.getHostname()]
+        ['target', getHostname()]
     ]);
 
     return await wgh(ns, {hostname} as NetServer, {once});

@@ -23,15 +23,16 @@ const autocomplete = (
 };
 
 const deployFiles: Executor = (
-    ns: NS,
+    {scp}: NS,
     {hostname}: NetServer,
     {files, origin = 'home'}: ExecutorOptions
 ) => {
-    return ns.scp(files as string[], hostname as string, origin as string);
+    return scp(files as string[], hostname as string, origin as string);
 };
 
 const main = async (ns: NS) => {
-    const {file: files, origin, target: hostname} = ns.flags(argsSchema);
+    const {flags} = ns;
+    const {file: files, origin, target: hostname} = flags(argsSchema);
     return deployFiles(ns, {hostname} as NetServer, {files, origin});
 };
 

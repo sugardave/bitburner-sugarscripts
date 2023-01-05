@@ -7,20 +7,21 @@ import {commonSchema} from 'utils/index';
 const argsSchema: CommandFlags = [...commonSchema];
 
 const crackPorts: Executor = (ns: NS, server: NetServer) => {
+    const {getServerNumPortsRequired, tprint} = ns;
     const {hostname: target} = server;
     const numPortCrackers = getNumPortCrackers(ns);
-    const requiredPortsToCrack = ns.getServerNumPortsRequired(target as string);
+    const requiredPortsToCrack = getServerNumPortsRequired(target as string);
     const portCrackers = getPortCrackers(ns);
     const portCrackerNames = [...portCrackers.keys()];
     let cracked = 0;
 
     if (requiredPortsToCrack > numPortCrackers) {
-        ns.tprint(
+        tprint(
             `Not enough port crackers to pwn ${target}:  need ${requiredPortsToCrack} but only have ${numPortCrackers}`
         );
         return;
     } else {
-        ns.tprint(
+        tprint(
             `cracking ${requiredPortsToCrack} port${
                 requiredPortsToCrack > 1 ? 's' : ''
             } on ${target}`
@@ -36,7 +37,9 @@ const crackPorts: Executor = (ns: NS, server: NetServer) => {
 };
 
 const main = async (ns: NS) => {
-    const {target: hostname} = ns.flags(argsSchema);
+    const {flags} = ns;
+
+    const {target: hostname} = flags(argsSchema);
     return crackPorts(ns, {hostname} as NetServer, {});
 };
 
