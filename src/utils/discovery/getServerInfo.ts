@@ -26,17 +26,16 @@ const loadServerCache = (ns: NS, cacheType = 'all') => {
 };
 
 const getServerInfo: Executor = (ns: NS, {hostname}, {skipCache}) => {
+    const {getServer} = ns;
     const cache = !skipCache ? loadServerCache(ns) : new Map([]);
-    const serverInfo = cache.size
-        ? cache.get(hostname)
-        : ns.getServer(hostname);
+    const serverInfo = cache.size ? cache.get(hostname) : getServer(hostname);
 
     return serverInfo;
 };
 
 const main = async (ns: NS) => {
-    const {skipCache, target: hostname = ns.getHostname()} =
-        ns.flags(argsSchema);
+    const {flags, getHostname} = ns;
+    const {skipCache, target: hostname = getHostname()} = flags(argsSchema);
     const serverInfo = getServerInfo(ns, {hostname} as NetServer, {skipCache});
 
     return serverInfo;

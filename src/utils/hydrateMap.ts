@@ -30,12 +30,13 @@ const hydrateMap = (
 };
 
 const main = async (ns: NS) => {
+    const {flags} = ns;
     const {
         filename: name,
         location,
         skipStash,
         stashName: id
-    } = ns.flags([
+    } = flags([
         ['filename', ''],
         ['location', ''],
         ['skipStash', false],

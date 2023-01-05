@@ -22,13 +22,14 @@ const autocomplete = ({flags}: AutocompleteData, args: ScriptArg[]) => {
 };
 
 const removeBot = (ns: NS, {bot}: BotnetManagerOptions) => {
+    const {deleteServer, killall, serverExists} = ns;
     const botnetMap = hydrateBotnetMap(ns, {stash: {id: 'botnetMap', reviver}});
     const botName: string = bot as string;
     const botnetName = generateBotnetName(botName);
     let deleted = false;
-    if (ns.serverExists(botName)) {
-        ns.killall(botName);
-        deleted = ns.deleteServer(botName);
+    if (serverExists(botName)) {
+        killall(botName);
+        deleted = deleteServer(botName);
     }
     if (!botnetMap.has(botnetName)) {
         botnetMap.set(botnetName, new Set());
@@ -46,7 +47,8 @@ const removeBot = (ns: NS, {bot}: BotnetManagerOptions) => {
 };
 
 const main = async (ns: NS) => {
-    const {bot} = ns.flags(argsSchema);
+    const {flags} = ns;
+    const {bot} = flags(argsSchema);
     return removeBot(ns, {bot});
 };
 

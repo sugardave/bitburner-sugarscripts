@@ -7,6 +7,7 @@ import {hydrateBotnetMap} from 'utils/botnet/hydrateBotnetMap';
 const argsSchema: CommandFlags = [...botnetFlagsSchemas.stopAttack];
 
 const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
+    const {killall} = ns;
     const botnetMap = hydrateBotnetMap(ns, {
         mapType: 'all',
         skipStash: false,
@@ -17,13 +18,14 @@ const stopAttack = (ns: NS, {botnet: botnets}: BotnetManagerOptions) => {
         const botnet = botnetMap.get(net);
         const members = botnet ? [...botnet.values()] : [];
         members.map((hostname) => {
-            ns.killall(hostname);
+            killall(hostname);
         });
     }
 };
 
 const main = async (ns: NS) => {
-    const {botnet} = ns.flags(argsSchema);
+    const {flags} = ns;
+    const {botnet} = flags(argsSchema);
     return stopAttack(ns, {botnet});
 };
 

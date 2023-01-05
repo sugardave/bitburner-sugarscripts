@@ -15,11 +15,12 @@ const autocomplete = (
     return getAutocompletions({args, completionKeys});
 };
 
-const isServerRooted: Executor = (ns: NS, {hostname}) =>
-    ns.getServer(hostname).hasAdminRights;
+const isServerRooted: Executor = ({getServer}: NS, {hostname}) =>
+    getServer(hostname).hasAdminRights;
 
 const main = async (ns: NS) => {
-    const {target: hostname = ns.getHostname()} = ns.flags(argsSchema);
+    const {flags, getHostname} = ns;
+    const {target: hostname = getHostname()} = flags(argsSchema);
     return isServerRooted(ns, {hostname} as NetServer, {});
 };
 
