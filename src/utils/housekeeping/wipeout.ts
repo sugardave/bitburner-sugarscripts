@@ -1,17 +1,18 @@
 import {NS} from '@ns';
 
 const wipeout = (ns: NS) => {
-    const jsFiles = ns.ls('home', '.js');
-    const txtFiles = ns.ls('home', '.txt');
-    const script = ns.getScriptName();
+    const {getScriptName, ls, rm} = ns;
+    const jsFiles = ls('home', '.js');
+    const txtFiles = ls('home', '.txt');
+    const script = getScriptName();
 
     jsFiles.map((f: string) => {
         if (f !== script) {
-            ns.rm(f);
+            rm(f);
         }
     });
     txtFiles.map((f: string) => {
-        ns.rm(f);
+        rm(f);
     });
 };
 

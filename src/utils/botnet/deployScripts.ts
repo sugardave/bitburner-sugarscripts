@@ -20,7 +20,9 @@ const deployScripts: Executor = (
 };
 
 const main = async (ns: NS) => {
-    const {origin = 'home', target: hostname} = ns.flags(argsSchema);
+    const {flags} = ns;
+
+    const {origin = 'home', target: hostname} = flags(argsSchema);
     return deployScripts(ns, {hostname} as NetServer, {origin});
 };
 

@@ -115,9 +115,10 @@ const sortServers = (
         sortOrder: string;
     }
 ) => {
+    const {getPlayer} = ns;
     const {
         skills: {hacking}
-    }: Player = ns.getPlayer();
+    }: Player = getPlayer();
     const result = new Map();
     const clone = new Map(serverMap);
 
@@ -173,7 +174,8 @@ const sortServers = (
 };
 
 const outputList = (ns: NS, serverMap: NetServerMap) => {
-    const {sortField: sortFields} = ns.flags(argsSchema);
+    const {flags} = ns;
+    const {sortField: sortFields} = flags(argsSchema);
     const fields = sortFields as string[];
     const terminalOut: string[] = [];
     const outputFieldString = ({hostname}: {hostname: string}) => {
@@ -225,6 +227,7 @@ const listServers = (
         stashName = 'nmap'
     }: {filename: string; skipStash: boolean; stashName: string}
 ) => {
+    const {tprint} = ns;
     const {location} = fileLocations.nmap;
     const file = new MapFile(ns, filename, location);
     // first, get all the servers
@@ -253,12 +256,13 @@ const listServers = (
     // limit the final result if necessary
     result.splice(limit ? limit : result.length + 1);
     if (!quiet) {
-        ns.tprint(outputList(ns, new Map(serverMap)));
+        tprint(outputList(ns, new Map(serverMap)));
     }
     return result;
 };
 
 const main = async (ns: NS) => {
+    const {flags} = ns;
     const {
         includeOwned,
         includeOverLevel,
@@ -266,7 +270,7 @@ const main = async (ns: NS) => {
         quiet = false,
         sortField,
         sortOrder = 'descending'
-    } = ns.flags(argsSchema);
+    } = flags(argsSchema);
     return listServers(
         ns,
         {
